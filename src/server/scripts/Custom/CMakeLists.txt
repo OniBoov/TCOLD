@@ -11,6 +11,8 @@
 # file(GLOB_RECURSE sources_Custom Custom/*.cpp Custom/*.h)
 
 set(scripts_STAT_SRCS
+  Custom/custom.cpp
+  Custom/custom_scripts.cpp
   ${scripts_STAT_SRCS}
 #  ${sources_Custom}
 )
