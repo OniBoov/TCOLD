@@ -1349,6 +1349,12 @@ class spell_sindragosa_icy_grip : public SpellScriptLoader
             void HandleScript(SpellEffIndex effIndex)
             {
                 PreventHitDefaultEffect(effIndex);
+
+                // Hack - Prevent beaconed players from being gripped
+                if (Unit* target = GetHitUnit())
+                    if (target->HasAura(SPELL_FROST_BEACON))
+                        return;
+
                 GetHitUnit()->CastSpell(GetCaster(), SPELL_ICY_GRIP_JUMP, true);
             }
 
