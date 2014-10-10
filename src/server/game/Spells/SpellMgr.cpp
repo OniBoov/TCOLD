@@ -3735,6 +3735,11 @@ void SpellMgr::LoadSpellInfoCorrections()
                 break;
             // ENDOF ISLE OF CONQUEST SPELLS
             //
+            case 49224: // Magic Suppression
+            case 49610:
+            case 49611:
+                spellInfo->ProcCharges = 0;
+                break;
             case 62997: // Mimiron - Plasma Blast
             case 69508: // Rotface - Slime Spray
             case 70498: // Vile Spirits
