@@ -3735,6 +3735,11 @@ void SpellMgr::LoadSpellInfoCorrections()
                 break;
             // ENDOF ISLE OF CONQUEST SPELLS
             //
+            case 62997: // Mimiron - Plasma Blast
+            case 69508: // Rotface - Slime Spray
+            case 70498: // Vile Spirits
+                spellInfo->ChannelInterruptFlags = 0;
+                break;
             default:
                 break;
         }
