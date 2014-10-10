@@ -148,6 +148,7 @@ enum CreaturesIds
 
     // Weekly quests
     NPC_INFILTRATOR_MINCHAR                     = 38471,
+    NPC_INFILTRATOR_MINCHAR_25                  = 39123,
     NPC_KOR_KRON_LIEUTENANT                     = 38491,
     NPC_SKYBREAKER_LIEUTENANT                   = 38492,
     NPC_ROTTING_FROST_GIANT_10                  = 38490,
@@ -519,11 +520,6 @@ enum AreaIds
 {
     AREA_ICECROWN_CITADEL   = 4812,
     AREA_THE_FROZEN_THRONE  = 4859
-};
-
-enum TrueWoWData
-{
-    NPC_INFILTRATOR_MINCHAR_BQ_25 = 39123
 };
 
 class spell_trigger_spell_from_caster : public SpellScriptLoader
