@@ -1261,6 +1261,9 @@ void World::LoadConfigSettings(bool reload)
     // AHBot
     m_int_configs[CONFIG_AHBOT_UPDATE_INTERVAL] = sConfigMgr->GetIntDefault("AuctionHouseBot.Update.Interval", 20);
 
+    m_bool_configs[CONFIG_CALCULATE_CREATURE_ZONE_AREA_DATA] = sConfigMgr->GetBoolDefault("Calculate.Creature.Zone.Area.Data", false);
+    m_bool_configs[CONFIG_CALCULATE_GAMEOBJECT_ZONE_AREA_DATA] = sConfigMgr->GetBoolDefault("Calculate.Gameoject.Zone.Area.Data", false);
+
     // call ScriptMgr if we're reloading the configuration
     if (reload)
         sScriptMgr->OnConfigLoad(reload);
@@ -1279,6 +1282,13 @@ void World::SetInitialWorldSettings()
 
     ///- Initialize detour memory management
     dtAllocSetCustom(dtCustomAlloc, dtCustomFree);
+
+    ///- Initialize VMapManager function pointers (to untangle game/collision circular deps)
+    if (VMAP::VMapManager2* vmmgr2 = dynamic_cast<VMAP::VMapManager2*>(VMAP::VMapFactory::createOrGetVMapManager()))
+    {
+        vmmgr2->GetLiquidFlagsPtr = &GetLiquidFlags;
+        vmmgr2->IsVMAPDisabledForPtr = &DisableMgr::IsVMAPDisabledFor;
+    }
 
     ///- Initialize config settings
     LoadConfigSettings();
@@ -1606,10 +1616,6 @@ void World::SetInitialWorldSettings()
     sAchievementMgr->LoadRewardLocales();
     TC_LOG_INFO("server.loading", "Loading Completed Achievements...");
     sAchievementMgr->LoadCompletedAchievements();
-
-    // Delete expired auctions before loading
-    TC_LOG_INFO("server.loading", "Deleting expired auctions...");
-    sAuctionMgr->DeleteExpiredAuctionsAtStartup();
 
     ///- Load dynamic data tables from the database
     TC_LOG_INFO("server.loading", "Loading Item Auctions...");
