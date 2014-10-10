@@ -521,6 +521,11 @@ enum AreaIds
     AREA_THE_FROZEN_THRONE  = 4859
 };
 
+enum TrueWoWData
+{
+    NPC_INFILTRATOR_MINCHAR_BQ_25 = 39123
+};
+
 class spell_trigger_spell_from_caster : public SpellScriptLoader
 {
     public:
