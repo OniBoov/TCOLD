@@ -3729,6 +3729,9 @@ void SpellMgr::LoadSpellInfoCorrections()
                 // Crashes client on pressing ESC
                 spellInfo->AttributesEx4 &= ~SPELL_ATTR4_TRIGGERED;
                 break;
+            case 24259: // Spell Lock
+                spellInfo->Speed = 80.0f;
+                break;
             // ISLE OF CONQUEST SPELLS
             //
             case 66551: // Teleport
