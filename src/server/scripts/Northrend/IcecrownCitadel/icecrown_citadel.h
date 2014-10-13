@@ -118,7 +118,7 @@ enum DataTypes
     DATA_UPPERSPIRE_TELE_ACT        = 41,
 
     // TW
-    DATA_CRIMSON_HALL_DOOR = 4
+    DATA_CRIMSON_HALL_DOOR          = 42
 };
 
 enum CreaturesIds
