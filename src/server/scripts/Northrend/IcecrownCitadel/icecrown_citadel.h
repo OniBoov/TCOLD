@@ -116,6 +116,9 @@ enum DataTypes
     DATA_TERENAS_MENETHIL           = 39,
     DATA_ENEMY_GUNSHIP              = 40,
     DATA_UPPERSPIRE_TELE_ACT        = 41,
+
+    // TW
+    DATA_CRIMSON_HALL_DOOR = 4
 };
 
 enum CreaturesIds
