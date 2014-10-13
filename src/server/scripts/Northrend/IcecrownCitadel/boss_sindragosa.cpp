@@ -617,8 +617,7 @@ class npc_ice_tomb : public CreatureScript
             {
                 if (!_trappedPlayerGUID)
                     return;
-                    
-                    
+
                 if (!_asphyxiationTriggered)
                 {
                     if (_asphyxiationTimer <= diff)
