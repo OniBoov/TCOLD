@@ -267,6 +267,9 @@ class boss_blood_council_controller : public CreatureScript
 
                 if (Creature* valanar = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_PRINCE_VALANAR_GUID)))
                     valanar->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+
+                // This is now necessary due to the way the door is handled.
+                instance->HandleGameObject(instance->GetGuidData(DATA_CRIMSON_HALL_DOOR), true); 
             }
 
             void JustDied(Unit* killer) override
@@ -1364,6 +1367,11 @@ class npc_dark_nucleus : public CreatureScript
                 }
                 else
                     _targetAuraCheck -= diff;
+            }
+
+            void JustDied(Unit* /*killer*/) override
+            {
+                me->DespawnOrUnsummon();
             }
 
         private:
