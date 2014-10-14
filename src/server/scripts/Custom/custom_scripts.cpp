@@ -83,8 +83,43 @@ class TW_spell_landmine_knockback : public SpellScriptLoader
         }
 };
 
+enum SlimeSpray
+{
+    NPC_OOZE_SPRAY_STALKER = 37986
+};
+
+class TW_spell_rotface_slime_spray : public SpellScriptLoader
+{
+    public:
+        TW_spell_rotface_slime_spray() : SpellScriptLoader("TW_spell_rotface_slime_spray") { }
+
+        class TW_spell_rotface_slime_spray_SpellScript : public SpellScript
+        {
+            PrepareSpellScript(TW_spell_rotface_slime_spray_SpellScript);
+
+            void ChangeOrientation()
+            {
+                Unit* caster = GetCaster();
+                // find stalker and set caster orientation to face it
+                if (Creature* target = caster->FindNearestCreature(NPC_OOZE_SPRAY_STALKER, 200.0f))
+                    caster->SetOrientation(caster->GetAngle(target));
+            }
+
+            void Register()
+            {
+                BeforeCast += SpellCastFn(TW_spell_rotface_slime_spray_SpellScript::ChangeOrientation);
+            }
+        };
+
+        SpellScript* GetSpellScript() const
+        {
+            return new TW_spell_rotface_slime_spray_SpellScript();
+        }
+};
+
 void AddSC_custom_scripts()
 {
     new TW_spell_item_draenic_pale_ale();
     new TW_spell_landmine_knockback();
+    new TW_spell_rotface_slime_spray();
 }
