@@ -3333,6 +3333,8 @@ void SpellMgr::LoadSpellInfoCorrections()
                 break;
             case 59630: // Black Magic
                 spellInfo->Attributes |= SPELL_ATTR0_PASSIVE;
+            case 44535: // Spirit Heal, abilities also have no cost
+                spellInfo->Effects[EFFECT_0].MiscValue = 127;
                 break;
             case 17364: // Stormstrike
                 spellInfo->AttributesEx3 |= SPELL_ATTR3_STACK_FOR_DIFF_CASTERS;
