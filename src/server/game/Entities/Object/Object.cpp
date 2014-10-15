@@ -2396,6 +2396,14 @@ Position WorldObject::GetFirstCollisionPosition(float dist, float angle)
     return pos;
 }
 
+Position WorldObject::GetFirstCollisionPosition(float dist, float angle, float destZ)
+{
+    Position pos = GetPosition();
+    pos.m_positionZ = destZ;
+    MovePositionToFirstCollision(pos, dist, angle);
+    return pos;
+}
+
 Position WorldObject::GetRandomNearPosition(float radius)
 {
     Position pos = GetPosition();
