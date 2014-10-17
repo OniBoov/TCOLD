@@ -51,6 +51,7 @@ enum Spells
     SPELL_MOLTEN                = 62373,
     SPELL_BRITTLE               = 62382,
     SPELL_SHATTER               = 62383,
+    SPELL_BRITTLE_HC            = 67114,
     SPELL_GROUND                = 62548,
 };
 
@@ -320,7 +321,7 @@ class npc_iron_construct : public CreatureScript
 
             void DamageTaken(Unit* /*attacker*/, uint32& damage) override
             {
-                if (me->HasAura(SPELL_BRITTLE) && damage >= 5000)
+                if (me->HasAura(RAID_MODE(SPELL_BRITTLE, SPELL_BRITTLE_HC)) && damage >= 5000)
                 {
                     DoCast(SPELL_SHATTER);
                     if (Creature* ignis = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(BOSS_IGNIS)))
