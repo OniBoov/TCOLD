@@ -408,6 +408,99 @@ class TW_spell_vanity_pet_focus : public SpellScriptLoader
         int32 passiveId;
 };
 
+enum PetAvoidance
+{
+    SPELL_HUNTER_ANIMAL_HANDLER  = 34453,
+    SPELL_NIGHT_OF_THE_DEAD      = 55620,
+
+    ENTRY_ARMY_OF_THE_DEAD_GHOUL = 24207
+};
+
+class TW_spell_hun_animal_handler : public SpellScriptLoader
+{
+    public:
+        TW_spell_hun_animal_handler() : SpellScriptLoader("TW_spell_hun_animal_handler") { }
+
+        class TW_spell_hun_animal_handler_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(TW_spell_hun_animal_handler_AuraScript);
+
+            bool Load() override
+            {
+                if (!GetCaster() || !GetCaster()->GetOwner() || GetCaster()->GetOwner()->GetTypeId() != TYPEID_PLAYER)
+                    return false;
+                return true;
+            }
+
+            void CalculateAmountDamageDone(AuraEffect const* /* aurEff */, int32& amount, bool& /*canBeRecalculated*/)
+            {
+                if (!GetCaster() || !GetCaster()->GetOwner())
+                    return;
+                if (Player* owner = GetCaster()->GetOwner()->ToPlayer())
+                {
+                    if (AuraEffect* /* aurEff */ect = owner->GetAuraEffectOfRankedSpell(SPELL_HUNTER_ANIMAL_HANDLER, EFFECT_1))
+                        amount = /* aurEff */ect->GetAmount();
+                    else
+                        amount = 0;
+                }
+            }
+
+            void Register() override
+            {
+                DoEffectCalcAmount += AuraEffectCalcAmountFn(TW_spell_hun_animal_handler_AuraScript::CalculateAmountDamageDone, EFFECT_0, SPELL_AURA_MOD_ATTACK_POWER_PCT);
+            }
+        };
+
+        AuraScript* GetAuraScript() const override
+        {
+            return new TW_spell_hun_animal_handler_AuraScript();
+        }
+};
+
+class TW_spell_dk_avoidance_passive : public SpellScriptLoader
+{
+    public:
+        TW_spell_dk_avoidance_passive() : SpellScriptLoader("TW_spell_dk_avoidance_passive") { }
+
+        class TW_spell_dk_avoidance_passive_AuraScript : public AuraScript
+        {
+            PrepareAuraScript(TW_spell_dk_avoidance_passive_AuraScript);
+
+            bool Load() override
+            {
+                if (!GetCaster() || !GetCaster()->GetOwner() || GetCaster()->GetOwner()->GetTypeId() != TYPEID_PLAYER)
+                    return false;
+                return true;
+            }
+
+            void CalculateAvoidanceAmount(AuraEffect const* /* aurEff */, int32& amount, bool& /*canBeRecalculated*/)
+            {
+                if (Unit* pet = GetUnitOwner())
+                {
+                    if (Unit* owner = pet->GetOwner())
+                    {
+                        // Army of the dead ghoul
+                        if (pet->GetEntry() == ENTRY_ARMY_OF_THE_DEAD_GHOUL)
+                            amount = -90;
+                        // Night of the dead
+                        else if (Aura* aur = owner->GetAuraOfRankedSpell(SPELL_NIGHT_OF_THE_DEAD))
+                            amount = -aur->GetSpellInfo()->Effects[EFFECT_2].CalcValue();
+                    }
+                }
+            }
+
+            void Register() override
+            {
+                DoEffectCalcAmount += AuraEffectCalcAmountFn(TW_spell_dk_avoidance_passive_AuraScript::CalculateAvoidanceAmount, EFFECT_0, SPELL_AURA_MOD_CREATURE_AOE_DAMAGE_AVOIDANCE);
+            }
+        };
+
+        AuraScript* GetAuraScript() const override
+        {
+            return new TW_spell_dk_avoidance_passive_AuraScript();
+        }
+};
+
 void AddSC_custom_scripts()
 {
     new TW_spell_item_draenic_pale_ale();
@@ -420,4 +513,6 @@ void AddSC_custom_scripts()
     new TW_spell_vanity_pet_focus("TW_spell_scorchling_focus");
     new TW_spell_vanity_pet_focus("TW_spell_toxic_wasteling_focus");
     new TW_spell_vanity_pet_focus("TW_spell_rocket_bot_focus", SPELL_ROCKET_BOT_PASSIVE);
+    new TW_spell_hun_animal_handler();
+    new TW_spell_dk_avoidance_passive();
 }
