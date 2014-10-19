@@ -142,8 +142,7 @@ void Arena::EndBattleground(uint32 winner)
         uint32 winnerMatchmakerRating = 0;
         int32  winnerChange           = 0;
         int32  winnerMatchmakerChange = 0;
-        uint8 uniqueIdentifier[16]; // generate unique hash
-        uint32 duration = GetStartTime() - time(NULL); // match duration
+        uint32 duration = GetStartTime() / IN_MILLISECONDS; // match duration
 
         ArenaTeam* winnerArenaTeam = sArenaTeamMgr->GetArenaTeamById(GetArenaTeamIdForTeam(winner));
         ArenaTeam* loserArenaTeam = sArenaTeamMgr->GetArenaTeamById(GetArenaTeamIdForTeam(GetOtherTeam(winner)));
@@ -188,6 +187,7 @@ void Arena::EndBattleground(uint32 winner)
                     GetArenaType(), GetArenaTeamIdByIndex(TEAM_ALLIANCE), GetArenaTeamIdByIndex(TEAM_HORDE), winnerArenaTeam->GetId(), winnerChange, loserChange);
 
                 // arena SQL logging
+                char uniqueIdentifier[32];
                 LoginDatabase.DirectPExecute("INSERT INTO arena_log VALUES (NULL, '%s', '%u', '%u', '%u', '%d', '%u', '%d', '%u', '%u', '%d', '%u', '%d', '%u')", uniqueIdentifier, GetArenaType(), winnerArenaTeam->GetId(), winnerTeamRating, winnerChange, winnerMatchmakerRating,
                 winnerMatchmakerChange, loserArenaTeam->GetId(), loserTeamRating, loserChange, loserMatchmakerRating, loserMatchmakerChange, (uint32)duration);
                 // arena SQL logging end section
