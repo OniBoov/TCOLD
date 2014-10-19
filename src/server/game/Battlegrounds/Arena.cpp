@@ -188,7 +188,7 @@ void Arena::EndBattleground(uint32 winner)
                     GetArenaType(), GetArenaTeamIdByIndex(TEAM_ALLIANCE), GetArenaTeamIdByIndex(TEAM_HORDE), winnerArenaTeam->GetId(), winnerChange, loserChange);
 
                 // arena SQL logging
-                char uniqueIdentifier[32];
+                //char uniqueIdentifier[32];
                 sprintf(uniqueIdentifier, UI64FMTD "%u%u", time(NULL), winnerArenaTeam->GetId(), loserArenaTeam->GetId());
                 LoginDatabase.DirectPExecute("INSERT INTO arena_log VALUES (NULL, '%s', '%u', '%u', '%u', '%d', '%u', '%d', '%u', '%u', '%d', '%u', '%d', '%u')", uniqueIdentifier, GetArenaType(), winnerArenaTeam->GetId(), winnerTeamRating, winnerChange, winnerMatchmakerRating,
                 winnerMatchmakerChange, loserArenaTeam->GetId(), loserTeamRating, loserChange, loserMatchmakerRating, loserMatchmakerChange, (uint32)duration);
