@@ -4973,6 +4973,8 @@ void Player::DeleteFromDB(ObjectGuid playerguid, uint32 accountId, bool updateRe
             stmt = CharacterDatabase.GetPreparedStatement(CHAR_DEL_CHAR_SKILLS);
             stmt->setUInt32(0, guid);
             trans->Append(stmt);
+            trans->PAppend("DELETE FROM armory_character_stats WHERE guid = '%u'", guid);
+            trans->PAppend("DELETE FROM character_feed_log WHERE guid = '%u'", guid);
 
             CharacterDatabase.CommitTransaction(trans);
             break;
@@ -17271,6 +17273,8 @@ bool Player::LoadFromDB(ObjectGuid guid, SQLQueryHolder *holder)
         CharacterDatabase.Execute(stmt);
         return false;
     }
+    // Cleanup old Wowarmory feeds
+    InitWowarmoryFeeds();
 
     // overwrite possible wrong/corrupted guid
     SetGuidValue(OBJECT_FIELD_GUID, guid);
