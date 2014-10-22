@@ -42,6 +42,7 @@ static DoorData const doorData[] =
     { GO_DOODAD_UL_UNIVERSEFLOOR_02,    BOSS_ALGALON,           DOOR_TYPE_SPAWN_HOLE,   BOUNDARY_NONE   },
     { GO_DOODAD_UL_UNIVERSEGLOBE01,     BOSS_ALGALON,           DOOR_TYPE_SPAWN_HOLE,   BOUNDARY_NONE   },
     { GO_DOODAD_UL_ULDUAR_TRAPDOOR_03,  BOSS_ALGALON,           DOOR_TYPE_SPAWN_HOLE,   BOUNDARY_NONE   },
+    { GO_THORIM_LIGHTNING_FIELD,        BOSS_THORIM,            DOOR_TYPE_ROOM,         BOUNDARY_N      },
     { 0,                                0,                      DOOR_TYPE_ROOM,         BOUNDARY_NONE   },
 };
 
@@ -485,6 +486,7 @@ class instance_ulduar : public InstanceMapScript
                     case GO_MIMIRON_DOOR_3:
                     case GO_VEZAX_DOOR:
                     case GO_YOGG_SARON_DOOR:
+                    case GO_THORIM_LIGHTNING_FIELD:
                         AddDoor(gameObject, true);
                         break;
                     case GO_RAZOR_HARPOON_1:
