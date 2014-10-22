@@ -43,8 +43,8 @@ enum SpellIds
 
 enum MiscData
 {
-    DESPAWN_TIME                = 1200000
-    EVENT_DEDICATED_INSANITY_CHECK = 10*IN_MILLISECONDS,
+    DESPAWN_TIME                = 1200000,
+    EVENT_DEDICATED_INSANITY_CHECK = 10*IN_MILLISECONDS
 };
 
 const Position ToCSpawnLoc[]=
