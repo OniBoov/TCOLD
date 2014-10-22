@@ -8,4 +8,5 @@ void AddSC_TW_boss_thorim();
 void AddSC_custom()
 {
     AddSC_custom_scripts();
+    AddSC_TW_boss_thorim();
 }
