@@ -188,7 +188,7 @@ const uint32 SPELL_ARENA_SECONDARY_H[]          = {15578, 38313, 62529, 62418, 6
 #define SPELL_CHARGE                            32323
 #define SPELL_RUNIC_MENDING                     RAID_MODE(62328, 62446)
 
-#define GO_LEVER                                194265
+#define GO_LEVER                                194264
 
 // Runic Colossus (Mini Boss) Spells
 enum RunicSpells
@@ -447,6 +447,28 @@ public:
                 DoCastAOE(SPELL_ACHIEVEMENT_CHECK);
                 me->setFaction(FACTION_FRIENDLY);
             }
+        }
+
+        // This is a hack to avoid wild database changes... and reverting them.
+        void JustSummoned(Creature* summon) override
+        {
+            switch (summon->GetEntry())
+            {
+                case NPC_CHARGED_ORB:
+                    summon->SetReactState(REACT_PASSIVE);
+                    summon->SetFlag(UNIT_FIELD_FLAGS, 33685508); // Magic number intentional.
+                    break;
+                case NPC_LIGHTNING_ORB:
+                    summon->CastSpell(summon, SPELL_LIGHTNING_DESTRUCTION, true);
+                    break;
+                default:
+                    break;
+            }
+
+            if (me->IsInCombat())
+                DoZoneInCombat(summon);
+
+            summons.Summon(summon);
         }
 
         void EnterCombat(Unit* /*who*/) override
@@ -720,16 +742,6 @@ public:
                 events.Reset();
                 DoZoneInCombat();
             }
-        }
-
-        void JustSummoned(Creature* summon) override
-        {
-            summons.Summon(summon);
-            if (me->IsInCombat())
-                DoZoneInCombat(summon);
-
-            if (summon->GetEntry() == NPC_LIGHTNING_ORB)
-                summon->CastSpell(summon, SPELL_LIGHTNING_DESTRUCTION, true);
         }
 
         void DamageTaken(Unit* attacker, uint32 &damage) override
