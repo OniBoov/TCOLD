@@ -1044,8 +1044,8 @@ class TW_npc_runic_colossus : public CreatureScript
                 me->GetMotionMaster()->MoveTargetedHome();
 
                 // Runed Door closed
-                if (instance)
-                    instance->SetData(DATA_RUNIC_DOOR, GO_STATE_READY);
+                if (GameObject* gate = me->FindNearestGameObject(GO_THORIM_RUNIC_DOOR, 20.0f))
+                    gate->SetGoState(GO_STATE_READY);
 
                 // Spawn trashes
                 summons.DespawnAll();
@@ -1067,9 +1067,8 @@ class TW_npc_runic_colossus : public CreatureScript
 
             void JustDied(Unit* /*victim*/) override
             {
-                // Runed Door opened
-                if (instance)
-                    instance->SetData(DATA_RUNIC_DOOR, GO_STATE_ACTIVE);
+                if (GameObject* gate = me->FindNearestGameObject(GO_THORIM_RUNIC_DOOR, 20.0f))
+                    gate->SetGoState(GO_STATE_ACTIVE);
             }
 
             void DoAction(int32 action) override
@@ -1244,8 +1243,8 @@ public:
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
             // Stone Door closed
-            if (instance)
-                instance->SetData(DATA_STONE_DOOR, GO_STATE_READY);
+            if (GameObject* gate = me->FindNearestGameObject(GO_THORIM_STONE_DOOR, 20.0f))
+                gate->SetGoState(GO_STATE_READY);
 
             // Spawn trashes
             summons.DespawnAll();
@@ -1274,8 +1273,8 @@ public:
         void JustDied(Unit* /*victim*/) override
         {
             // Stone Door opened
-            if (instance)
-                instance->SetData(DATA_STONE_DOOR, GO_STATE_ACTIVE);
+            if (GameObject* gate = me->FindNearestGameObject(GO_THORIM_STONE_DOOR, 20.0f))
+                gate->SetGoState(GO_STATE_ACTIVE);
         }
 
         void UpdateAI(uint32 diff) override

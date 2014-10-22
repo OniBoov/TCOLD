@@ -145,6 +145,10 @@ class instance_ulduar : public InstanceMapScript
             bool Unbroken;
             bool IsDriveMeCrazyEligible;
 
+            // TW
+            ObjectGuid RuneGiantGUID;
+            ObjectGuid RunicColossusGUID;
+
             void FillInitialWorldStates(WorldPacket& packet) override
             {
                 packet << uint32(WORLD_STATE_ALGALON_TIMER_ENABLED) << uint32(_algalonTimer && _algalonTimer <= 60);
@@ -405,6 +409,14 @@ class instance_ulduar : public InstanceMapScript
                     case NPC_UNLEASHED_DARK_MATTER:
                         if (Creature* algalon = instance->GetCreature(AlgalonGUID))
                             algalon->AI()->JustSummoned(creature);
+                        break;
+
+                    // TW
+                    case NPC_RUNE_GIANT:
+                        RuneGiantGUID = creature->GetGUID();
+                        break;
+                    case NPC_RUNIC_COLOSSUS:
+                        RunicColossusGUID = creature->GetGUID();
                         break;
                 }
             }
@@ -931,6 +943,12 @@ class instance_ulduar : public InstanceMapScript
                         return AlgalonTrapdoorGUID;
                     case DATA_BRANN_BRONZEBEARD_ALG:
                         return BrannBronzebeardAlgGUID;
+
+                    // TW - Thorim
+                    case DATA_RUNE_GIANT:
+                        return RuneGiantGUID;
+                    case DATA_RUNIC_COLOSSUS:
+                        return RunicColossusGUID;
                 }
 
                 return ObjectGuid::Empty;
