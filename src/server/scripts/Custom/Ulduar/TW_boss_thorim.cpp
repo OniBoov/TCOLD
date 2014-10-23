@@ -448,6 +448,7 @@ public:
             switch (summon->GetEntry())
             {
                 case NPC_CHARGED_ORB:
+                    summon->AddUnitState(UNIT_STATE_ROOT); // bah
                     summon->SetReactState(REACT_PASSIVE);
                     summon->SetFlag(UNIT_FIELD_FLAGS, 33685508); // Magic number intentional.
                     break;
