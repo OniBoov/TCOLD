@@ -403,20 +403,6 @@ public:
             _checkTargetTimer = 7000;
             PreAddsCount = 0;
 
-            if (Creature* Sif = ObjectAccessor::GetCreature(*me, SifGUID))
-                Sif->DespawnOrUnsummon();
-            SifGUID.Clear();
-
-            // Respawn Mini Bosses
-            for (uint8 i = DATA_RUNIC_COLOSSUS; i <= DATA_RUNE_GIANT; ++i)
-                if (Creature* MiniBoss = ObjectAccessor::GetCreature(*me, instance->GetGuidData(i)))
-                    MiniBoss->Respawn(true);
-
-            // Spawn Pre-Phase Adds
-            for (uint8 i = 0; i < 6; ++i)
-                me->SummonCreature(preAddLocations[i].entry,preAddLocations[i].x, preAddLocations[i].y, preAddLocations[i].z, preAddLocations[i].o,
-                TEMPSUMMON_CORPSE_TIMED_DESPAWN, 3000);
-
             if (GameObject* go = me->FindNearestGameObject(GO_LEVER, 500))
                 go->SetFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
         }
