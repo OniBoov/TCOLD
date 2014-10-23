@@ -386,6 +386,13 @@ public:
                 // Spawn Pre-Phase Adds
                 for (uint8 i = 0; i < 6; ++i)
                     me->SummonCreature(preAddLocations[i].entry, preAddLocations[i].x, preAddLocations[i].y, preAddLocations[i].z, preAddLocations[i].o, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 3000);
+
+                // First tunnel adds
+                for (uint8 i = 0; i < 6; i++)
+                    me->SummonCreature(colossusAddLocations[i].entry, colossusAddLocations[i].x, colossusAddLocations[i].y, colossusAddLocations[i].z, colossusAddLocations[i].o, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 3000);
+
+                for (uint8 i = 0; i < 5; i++)
+                    me->SummonCreature(giantAddLocations[i].entry, giantAddLocations[i].x, giantAddLocations[i].y, giantAddLocations[i].z, giantAddLocations[i].o, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 3000);
             }
 
             _Reset();
@@ -1039,11 +1046,7 @@ class TW_npc_runic_colossus : public CreatureScript
                 if (GameObject* gate = me->FindNearestGameObject(GO_THORIM_RUNIC_DOOR, 20.0f))
                     gate->SetGoState(GO_STATE_READY);
 
-                // Spawn trashes
                 summons.DespawnAll();
-                for (uint8 i = 0; i < 6; i++)
-                    me->SummonCreature(colossusAddLocations[i].entry, colossusAddLocations[i].x, colossusAddLocations[i].y, colossusAddLocations[i].z,
-                    colossusAddLocations[i].o, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 3000);
             }
 
             void MoveInLineOfSight(Unit* who) override
@@ -1240,8 +1243,6 @@ public:
 
             // Spawn trashes
             summons.DespawnAll();
-            for (uint8 i = 0; i < 5; i++)
-                me->SummonCreature(giantAddLocations[i].entry,giantAddLocations[i].x,giantAddLocations[i].y,giantAddLocations[i].z,giantAddLocations[i].o,TEMPSUMMON_CORPSE_TIMED_DESPAWN,3000);
         }
 
         void MoveInLineOfSight(Unit* who) override
