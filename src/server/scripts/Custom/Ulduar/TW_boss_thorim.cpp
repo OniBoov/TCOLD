@@ -376,10 +376,16 @@ public:
 
             if (Wipe)
             {
-                instance->SetBossState(BOSS_THORIM, FAIL);
-                if (Creature* Sif = me->FindNearestCreature(NPC_SIF, 200.0f))
-                    Sif->DespawnOrUnsummon();
                 Talk(SAY_WIPE);
+               
+                // Respawn Mini Bosses
+                for (uint8 i = DATA_RUNIC_COLOSSUS; i <= DATA_RUNE_GIANT; ++i)
+                    if (Creature* MiniBoss = ObjectAccessor::GetCreature(*me, instance->GetGuidData(i)))
+                        MiniBoss->Respawn(true);
+
+                // Spawn Pre-Phase Adds
+                for (uint8 i = 0; i < 6; ++i)
+                    me->SummonCreature(preAddLocations[i].entry, preAddLocations[i].x, preAddLocations[i].y, preAddLocations[i].z, preAddLocations[i].o, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 3000);
             }
 
             _Reset();
