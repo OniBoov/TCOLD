@@ -374,6 +374,8 @@ public:
             if (EncounterFinished)
                 return;
 
+            _Reset();
+
             if (Wipe)
             {
                 Talk(SAY_WIPE);
@@ -394,8 +396,6 @@ public:
                 for (uint8 i = 0; i < 5; i++)
                     me->SummonCreature(giantAddLocations[i].entry, giantAddLocations[i].x, giantAddLocations[i].y, giantAddLocations[i].z, giantAddLocations[i].o, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 3000);
             }
-
-            _Reset();
 
             me->SetReactState(REACT_PASSIVE);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE | UNIT_FLAG_NON_ATTACKABLE);
