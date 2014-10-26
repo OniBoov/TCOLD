@@ -377,25 +377,7 @@ public:
             _Reset();
 
             if (Wipe)
-            {
                 Talk(SAY_WIPE);
-               
-                // Respawn Mini Bosses
-                for (uint8 i = DATA_RUNIC_COLOSSUS; i <= DATA_RUNE_GIANT; ++i)
-                    if (Creature* MiniBoss = ObjectAccessor::GetCreature(*me, instance->GetGuidData(i)))
-                        MiniBoss->Respawn(true);
-
-                // Spawn Pre-Phase Adds
-                for (uint8 i = 0; i < 6; ++i)
-                    me->SummonCreature(preAddLocations[i].entry, preAddLocations[i].x, preAddLocations[i].y, preAddLocations[i].z, preAddLocations[i].o, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 3000);
-
-                // First tunnel adds
-                for (uint8 i = 0; i < 6; i++)
-                    me->SummonCreature(colossusAddLocations[i].entry, colossusAddLocations[i].x, colossusAddLocations[i].y, colossusAddLocations[i].z, colossusAddLocations[i].o, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 3000);
-
-                for (uint8 i = 0; i < 5; i++)
-                    me->SummonCreature(giantAddLocations[i].entry, giantAddLocations[i].x, giantAddLocations[i].y, giantAddLocations[i].z, giantAddLocations[i].o, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 3000);
-            }
 
             me->SetReactState(REACT_PASSIVE);
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_DISABLE_MOVE | UNIT_FLAG_NON_ATTACKABLE);
@@ -1052,7 +1034,11 @@ class TW_npc_runic_colossus : public CreatureScript
                 if (GameObject* gate = me->FindNearestGameObject(GO_THORIM_RUNIC_DOOR, 20.0f))
                     gate->SetGoState(GO_STATE_READY);
 
+                // Spawn trashes
                 summons.DespawnAll();
+                for (uint8 i = 0; i < 6; i++)
+                    me->SummonCreature(colossusAddLocations[i].entry, colossusAddLocations[i].x, colossusAddLocations[i].y, colossusAddLocations[i].z,
+                    colossusAddLocations[i].o, TEMPSUMMON_CORPSE_TIMED_DESPAWN, 3000);
             }
 
             void MoveInLineOfSight(Unit* who) override
@@ -1068,7 +1054,7 @@ class TW_npc_runic_colossus : public CreatureScript
 
             void JustDied(Unit* /*victim*/) override
             {
-                if (GameObject* gate = me->FindNearestGameObject(GO_THORIM_RUNIC_DOOR, 20.0f))
+                if (GameObject* gate = me->FindNearestGameObject(GO_THORIM_RUNIC_DOOR, 200.0f))
                     gate->SetGoState(GO_STATE_ACTIVE);
             }
 
@@ -1244,11 +1230,13 @@ public:
             me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
 
             // Stone Door closed
-            if (GameObject* gate = me->FindNearestGameObject(GO_THORIM_STONE_DOOR, 20.0f))
+            if (GameObject* gate = me->FindNearestGameObject(GO_THORIM_STONE_DOOR, 200.0f))
                 gate->SetGoState(GO_STATE_READY);
 
             // Spawn trashes
             summons.DespawnAll();
+            for (uint8 i = 0; i < 5; i++)
+                me->SummonCreature(giantAddLocations[i].entry,giantAddLocations[i].x,giantAddLocations[i].y,giantAddLocations[i].z,giantAddLocations[i].o,TEMPSUMMON_CORPSE_TIMED_DESPAWN,3000);
         }
 
         void MoveInLineOfSight(Unit* who) override
