@@ -196,6 +196,7 @@ class boss_razorscale_controller : public CreatureScript
             {
                 _Reset();
                 me->SetReactState(REACT_PASSIVE);
+                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_NPC | UNIT_FLAG_IMMUNE_TO_PC);
             }
 
             void SpellHit(Unit* /*caster*/, SpellInfo const* spell) override
@@ -263,6 +264,7 @@ class boss_razorscale_controller : public CreatureScript
                                     BrokenHarpoon->RemoveFromWorld();
                                 events.ScheduleEvent(EVENT_BUILD_HARPOON_2, 20000);
                                 events.CancelEvent(EVENT_BUILD_HARPOON_1);
+                                Harpoon->SetOwnerGUID(ObjectGuid::Empty);
                             }
                             return;
                         case EVENT_BUILD_HARPOON_2:
@@ -272,6 +274,7 @@ class boss_razorscale_controller : public CreatureScript
                                 if (GameObject* BrokenHarpoon = Harpoon->FindNearestGameObject(GO_RAZOR_BROKEN_HARPOON, 5.0f))
                                     BrokenHarpoon->RemoveFromWorld();
                                 events.CancelEvent(EVENT_BUILD_HARPOON_2);
+                                Harpoon->SetOwnerGUID(ObjectGuid::Empty);
                             }
                             return;
                         case EVENT_BUILD_HARPOON_3:
@@ -282,6 +285,7 @@ class boss_razorscale_controller : public CreatureScript
                                     BrokenHarpoon->RemoveFromWorld();
                                 events.ScheduleEvent(EVENT_BUILD_HARPOON_4, 20000);
                                 events.CancelEvent(EVENT_BUILD_HARPOON_3);
+                                Harpoon->SetOwnerGUID(ObjectGuid::Empty);
                             }
                             return;
                         case EVENT_BUILD_HARPOON_4:
@@ -291,6 +295,7 @@ class boss_razorscale_controller : public CreatureScript
                                 if (GameObject* BrokenHarpoon = Harpoon->FindNearestGameObject(GO_RAZOR_BROKEN_HARPOON, 5.0f))
                                     BrokenHarpoon->RemoveFromWorld();
                                 events.CancelEvent(EVENT_BUILD_HARPOON_4);
+                                Harpoon->SetOwnerGUID(ObjectGuid::Empty);
                             }
                             return;
                     }
