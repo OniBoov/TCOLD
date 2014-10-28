@@ -339,6 +339,9 @@ class boss_hodir : public CreatureScript
 
             void Reset() override
             {
+                if (instance->GetBossState(BOSS_HODIR) == DONE)
+                    return;
+
                 Initialize();
 
                 _Reset();
