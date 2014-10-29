@@ -790,12 +790,6 @@ class npc_life_spark : public CreatureScript
                 me->SetInCombatWithZone();
             }
 
-            void KilledUnit(Unit* who) override
-            {
-                if (who->GetTypeId() == TYPEID_PLAYER)
-                    me->GetInstanceScript()->SetData(DATA_CRITERIA_XT_002, 1);
-            }
-
             void UpdateAI(uint32 diff) override
             {
                 if (!UpdateVictim())
