@@ -12,6 +12,7 @@
 
 set(scripts_STAT_SRCS
   Custom/custom.cpp
+  Custom/cs_custom.cpp
   Custom/custom_scripts.cpp
   Custom/Ulduar/TW_boss_thorim.cpp
   ${scripts_STAT_SRCS}

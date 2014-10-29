@@ -701,7 +701,11 @@ enum RBACPermissions
     RBAC_PERM_COMMAND_INSTANCE_SET_BOSS_STATE                = 795,
     RBAC_PERM_COMMAND_INSTANCE_GET_BOSS_STATE                = 796,
 
-    // custom permissions 1000+
+    // custom permissions 1004+
+    RBAC_PERM_COMMAND_QUESTCOMPLETER                         = 1000,
+    RBAC_PERM_COMMAND_QUESTCOMPLETER_STATUS                  = 1001,
+    RBAC_PERM_COMMAND_QUESTCOMPLETER_ADD                     = 1002,
+    RBAC_PERM_COMMAND_QUESTCOMPLETER_DEL                     = 1003,
     RBAC_PERM_MAX
 };
 
