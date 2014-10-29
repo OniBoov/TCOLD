@@ -126,7 +126,7 @@ public:
         if (ReqOrRewMoney < 0)
             player->ModifyMoney(-ReqOrRewMoney);
 
-        handler->PSendSysMessage("%s completed!", quest->GetTitle().c_str());
+        handler->PSendSysMessage(LANG_COMMAND_QC_COMPLETE, quest->GetTitle().c_str());
         player->CompleteQuest(entry);
         return true;
     }
@@ -136,7 +136,7 @@ public:
         char* cId = handler->extractKeyFromLink((char*)args, "Hquest");
         if (!cId)
         {
-            handler->PSendSysMessage("Syntax: .qc $quest\n\nSearches Quest Completer to see if $quest is bugged.");
+            handler->PSendSysMessage(LANG_COMMAND_QC);
             handler->SetSentErrorMessage(true);
             return false;
         }
@@ -160,7 +160,7 @@ public:
  
                 if (!resultCheck)
                 {
-                    handler->PSendSysMessage("%s is not bugged!", questTitle.c_str());
+                    handler->PSendSysMessage(LANG_COMMAND_QC_EMPTY, questTitle.c_str());
                     return true;
                 }
                 else
@@ -175,7 +175,7 @@ public:
                         Quest const* quest = sObjectMgr->GetQuestTemplate(entry);
                         if (!quest || player->GetQuestStatus(entry) != QUEST_STATUS_INCOMPLETE)
                         {
-                            handler->PSendSysMessage("%s is bugged!", questTitle.c_str());
+                            handler->PSendSysMessage(LANG_COMMAND_QC_FOUND, questTitle.c_str());
                             return true;
                         }
                         else
@@ -186,7 +186,7 @@ public:
                     }
                     else
                     {
-                        handler->PSendSysMessage("%s is bugged!", questTitle.c_str());
+                        handler->PSendSysMessage(LANG_COMMAND_QC_FOUND, questTitle.c_str());
                         return true;
                     }
                 }
@@ -207,7 +207,7 @@ public:
 
         if (!cId)
         {
-            handler->PSendSysMessage("Syntax: .qc add $quest\n\nAdds $quest to the quest completer.");
+            handler->PSendSysMessage(LANG_COMMAND_QC_ADD);
             handler->SetSentErrorMessage(true);
             return false;
         }
@@ -236,13 +236,13 @@ public:
             stmt->setUInt32(0, entry);
             resultCheck = LoginDatabase.Query(stmt);
             if(resultCheck) // quest was returned
-                handler->PSendSysMessage("%s was not added due to a SQL error.", questTitle.c_str());
+                handler->PSendSysMessage(LANG_COMMAND_QC_DEL_ERROR, questTitle.c_str());
             else
-                handler->PSendSysMessage("%s was added!", questTitle.c_str());
+                handler->PSendSysMessage(LANG_COMMAND_QC_ADD_SUCCESS, questTitle.c_str());
         }
         else
         {
-            handler->PSendSysMessage("%s is already in Quest Completer!", questTitle.c_str());
+            handler->PSendSysMessage(LANG_COMMAND_QC_ADD_EXISTS, questTitle.c_str());
         }
         return true;
     }
@@ -253,7 +253,7 @@ public:
 
         if (!cId)
         {
-            handler->PSendSysMessage("Syntax: .qc del $quest\n\nDeletes $quest from the quest completer.");
+            handler->PSendSysMessage(LANG_COMMAND_QC_DEL);
             handler->SetSentErrorMessage(true);
             return false;
         }
@@ -274,7 +274,7 @@ public:
         PreparedQueryResult resultCheck = LoginDatabase.Query(stmt);
 
         if (!resultCheck)
-            handler->PSendSysMessage("%s is not in the Quest Completer.", questTitle.c_str());
+            handler->PSendSysMessage(LANG_COMMAND_QC_DEL_ERROR, questTitle.c_str());
         else
         {
             if (entry != 0)
@@ -283,10 +283,10 @@ public:
                 stmt = LoginDatabase.GetPreparedStatement(LOGIN_DEL_QUESTCOMPLETER);
                 stmt->setUInt32(0, entry);
                 LoginDatabase.Execute(stmt);
-                handler->PSendSysMessage("%s was removed!", questTitle.c_str());
+                handler->PSendSysMessage(LANG_COMMAND_QC_DEL_SUCCESS, questTitle.c_str());
             }
             else
-                handler->PSendSysMessage("There was a error with your request.");
+                handler->PSendSysMessage(LANG_COMMAND_QC_DEL_ERROR2);
         }
         return true;
     }

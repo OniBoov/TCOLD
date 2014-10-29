@@ -1115,6 +1115,19 @@ enum TrinityStrings
     LANG_COMMAND_MUTEHISTORY            = 5059,
     LANG_COMMAND_MUTEHISTORY_EMPTY      = 5060,
     LANG_COMMAND_MUTEHISTORY_OUTPUT     = 5061,
+    
+    LANG_COMMAND_QC                     = 5062, // Syntax: .qc $quest\n\nSearches Quest Completer to see if $quest is bugged.
+    LANG_COMMAND_QC_COMPLETE            = 5063, // %s completed!
+    LANG_COMMAND_QC_FOUND               = 5064, // %s is bugged!
+    LANG_COMMAND_QC_EMPTY               = 5065, // %s is not bugged! 
+    LANG_COMMAND_QC_ADD                 = 5066, // Syntax: .qc add $quest\n\nAdds $quest to the quest completer.
+    LANG_COMMAND_QC_ADD_SUCCESS         = 5067, // %s was added!
+    LANG_COMMAND_QC_ADD_ERROR           = 5068, // %s was not added due to a SQL error.
+    LANG_COMMAND_QC_ADD_EXISTS          = 5069, // %s is already in Quest Completer!
+    LANG_COMMAND_QC_DEL                 = 5070, // Syntax: .qc del $quest\n\nDeletes $quest from the quest completer.
+    LANG_COMMAND_QC_DEL_SUCCESS         = 5071, // %s was removed!
+    LANG_COMMAND_QC_DEL_ERROR           = 5072, // %s is not in the Quest Completer.
+    LANG_COMMAND_QC_DEL_ERROR2          = 5073, // There was a error with your request.
 
     // Room for more Trinity strings      5062-9999
 
