@@ -14,13 +14,12 @@ before_install:
   - sudo apt-get install build-essential libtool make cmake openssl libssl-dev libmysqlclient15-dev libmysql++-dev libreadline6-dev zlib1g-dev libbz2-dev libboost1.55-dev libboost-thread1.55-dev libboost-system1.55-dev libboost-program-options1.55-dev
   - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
   - if [ "$CXX" = "g++" ]; then export CXX="g++-4.8" CC="gcc-4.8"; fi
-  - export MAKEFLAGS=-j`nproc`
 
 script:
   - mkdir build
   - cd build
   - cmake .. -DWITH_WARNINGS=1 -DWITH_COREDEBUG=0 -DUSE_COREPCH=1 -DUSE_SCRIPTPCH=1 -DTOOLS=0 -DSCRIPTS=1 -DSERVERS=1 -DNOJEM=1
-  - make
+  - make -j 6
 
 notifications:
   email: false
