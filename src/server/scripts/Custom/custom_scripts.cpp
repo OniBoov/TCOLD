@@ -501,6 +501,50 @@ class TW_spell_dk_avoidance_passive : public SpellScriptLoader
         }
 };
 
+enum RoarOfSacrifice
+{
+    SPELL_ROAR_OF_SACRIFICE_DMG = 67481
+};
+
+// 53480 - Roar of Sacrifice
+class TW_spell_hun_roar_of_sacrifice : public SpellScriptLoader
+{
+public:
+    TW_spell_hun_roar_of_sacrifice() : SpellScriptLoader("TW_spell_hun_roar_of_sacrifice") { }
+
+    class TW_spell_hun_roar_of_sacrifice_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(TW_spell_hun_roar_of_sacrifice_AuraScript);
+
+        bool Validate(SpellInfo const* /*spellInfo*/) override
+        {
+            if (!sSpellMgr->GetSpellInfo(SPELL_ROAR_OF_SACRIFICE_DMG))
+                return false;
+            return true;
+        }
+
+        void HandleProc(AuraEffect const* aurEff, ProcEventInfo& eventInfo)
+        {
+            PreventDefaultAction();
+            if (eventInfo.GetDamageInfo())
+            {
+                int32 damage = CalculatePct(eventInfo.GetDamageInfo()->GetDamage(), 20);
+                GetTarget()->CastCustomSpell(SPELL_ROAR_OF_SACRIFICE_DMG, SPELLVALUE_BASE_POINT0, damage, GetCaster(), true, NULL, aurEff);
+            }
+        }
+
+        void Register() override
+        {
+            OnEffectProc += AuraEffectProcFn(TW_spell_hun_roar_of_sacrifice_AuraScript::HandleProc, EFFECT_0, SPELL_AURA_MOD_ATTACKER_SPELL_AND_WEAPON_CRIT_CHANCE);
+        }
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new TW_spell_hun_roar_of_sacrifice_AuraScript();
+    }
+};
+
 void AddSC_custom_scripts()
 {
     new TW_spell_item_draenic_pale_ale();
@@ -515,4 +559,5 @@ void AddSC_custom_scripts()
     new TW_spell_vanity_pet_focus("TW_spell_rocket_bot_focus", SPELL_ROCKET_BOT_PASSIVE);
     new TW_spell_hun_animal_handler();
     new TW_spell_dk_avoidance_passive();
+    new TW_spell_hun_roar_of_sacrifice();
 }
