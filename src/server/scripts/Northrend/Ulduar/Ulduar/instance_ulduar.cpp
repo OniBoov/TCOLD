@@ -135,6 +135,7 @@ class instance_ulduar : public InstanceMapScript
             ObjectGuid AlgalonUniverseGUID;
             ObjectGuid AlgalonTrapdoorGUID;
             ObjectGuid GiftOfTheObserverGUID;
+            ObjectGuid AncientGateGUID;
 
             // Miscellaneous
             uint32 TeamInInstance;
@@ -571,6 +572,14 @@ class instance_ulduar : public InstanceMapScript
                     case GO_GIFT_OF_THE_OBSERVER_25:
                         GiftOfTheObserverGUID = gameObject->GetGUID();
                         break;
+                    case GO_ANCIENT_GATE:
+                        AncientGateGUID = gameObject->GetGUID();
+                        if (GetBossState(BOSS_FREYA) == DONE &&
+                            GetBossState(BOSS_THORIM) == DONE &&
+                            GetBossState(BOSS_MIMIRON) == DONE &&
+                            GetBossState(BOSS_HODIR) == DONE)
+                            gameObject->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_LOCKED);
+                        break;
                     default:
                         break;
                 }
@@ -784,6 +793,13 @@ class instance_ulduar : public InstanceMapScript
                         }
                         break;
                 }
+
+                if (GetBossState(BOSS_FREYA) == DONE &&
+                    GetBossState(BOSS_THORIM) == DONE &&
+                    GetBossState(BOSS_MIMIRON) == DONE &&
+                    GetBossState(BOSS_HODIR) == DONE)
+                if (GameObject* gate = instance->GetGameObject(AncientGateGUID))
+                    gate->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_LOCKED);
 
                 return true;
             }

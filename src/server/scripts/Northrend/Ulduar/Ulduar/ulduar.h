@@ -272,6 +272,8 @@ enum UlduarGameObjects
     GO_THORIM_LIGHTNING_FIELD               = 194559,
     GO_THORIM_STONE_DOOR                    = 194558,
     GO_THORIM_RUNIC_DOOR                    = 194557,
+
+    GO_ANCIENT_GATE                         = 194255
 };
 
 enum EventIds
