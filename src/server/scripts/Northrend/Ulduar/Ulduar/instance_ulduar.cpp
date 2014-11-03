@@ -1044,6 +1044,23 @@ class instance_ulduar : public InstanceMapScript
                     case CRITERIA_ALONE_IN_THE_DARKNESS_10:
                     case CRITERIA_ALONE_IN_THE_DARKNESS_25:
                         return keepersCount == 0;
+
+                    // TrueWoW
+                    case CRITERIA_THIS_CACHE_WAS_RARE_10:
+                    case CRITERIA_THIS_CACHE_WAS_RARE_25:
+                        return HodirRareCacheData == 1;
+                    case CRITERIA_COOLEST_FRIENDS_10:
+                    case CRITERIA_COOLEST_FRIENDS_25:
+                        if (Creature* Hodir = instance->GetCreature(HodirGUID))
+                            return Hodir->AI()->GetData(DATA_COOLEST_FRIENDS) == 1;
+                    case CRITERIA_CHEESE_THE_FREEZE_10:
+                    case CRITERIA_CHEESE_THE_FREEZE_25:
+                        if (Creature* Hodir = instance->GetCreature(HodirGUID))
+                            return Hodir->AI()->GetData(DATA_CHEESE_THE_FREEZE) == 1;
+                    case CRITERIA_GETTING_COLD_IN_HERE_10:
+                    case CRITERIA_GETTING_COLD_IN_HERE_25:
+                        if (Creature* Hodir = instance->GetCreature(HodirGUID))
+                            return Hodir->AI()->GetData(DATA_GETTING_COLD_IN_HERE) == 1;
                 }
 
                 return false;

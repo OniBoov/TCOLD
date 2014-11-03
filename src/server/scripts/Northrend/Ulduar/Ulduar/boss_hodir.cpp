@@ -145,7 +145,7 @@ enum HodirActions
 
 enum Misc
 {
-    DATA_GETTING_COLD_IN_HERE                    = 29672968 // 2967, 2968 are achievement IDs
+    //DATA_GETTING_COLD_IN_HERE                    = 29672968 // 2967, 2968 are achievement IDs
 };
 
 Position const SummonPositions[8] =
@@ -410,6 +410,20 @@ class boss_hodir : public CreatureScript
 
                     _JustDied();
                 }
+            }
+
+            uint32 GetData(uint32 type) const override
+            {
+                switch (type)
+                {
+                    case DATA_CHEESE_THE_FREEZE:
+                        return cheeseTheFreeze;
+                    case DATA_COOLEST_FRIENDS:
+                        return iHaveTheCoolestFriends;
+                    case DATA_GETTING_COLD_IN_HERE:
+                        return gettingColdInHere;
+                }
+                return 0;
             }
 
             void UpdateAI(uint32 diff) override
