@@ -731,6 +731,8 @@ class instance_ulduar : public InstanceMapScript
                             }
                             HandleGameObject(KologarnBridgeGUID, false);
                         }
+                        else
+                            rubbleCount = 0;
                         break;
                     case BOSS_HODIR:
                         if (state == DONE)
