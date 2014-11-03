@@ -327,6 +327,8 @@ enum UlduarAchievementCriteriaIds
     CRITERIA_COOLEST_FRIENDS_25      = 10260,
     CRITERIA_CHEESE_THE_FREEZE_10    = 10259,
     CRITERIA_CHEESE_THE_FREEZE_25    = 10261,
+    CRITERIA_RUBBLE_N_ROLL_10        = 10290,
+    CRITERIA_RUBBLE_N_ROLL_25        = 10133
 };
 
 enum UlduarData

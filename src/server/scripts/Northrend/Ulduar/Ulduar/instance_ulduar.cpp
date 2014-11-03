@@ -80,6 +80,7 @@ class instance_ulduar : public InstanceMapScript
                 keepersCount = 0;
                 conSpeedAtory = false;
                 lumberjacked = false;
+                rubbleCount = 0;
                 Unbroken = true;
                 IsDriveMeCrazyEligible = true;
                 _algalonSummoned = false;
@@ -152,6 +153,7 @@ class instance_ulduar : public InstanceMapScript
             // TW
             ObjectGuid RuneGiantGUID;
             ObjectGuid RunicColossusGUID;
+            uint32 rubbleCount;
 
             void FillInitialWorldStates(WorldPacket& packet) override
             {
@@ -424,6 +426,9 @@ class instance_ulduar : public InstanceMapScript
                         break;
                     case NPC_RUNIC_COLOSSUS:
                         RunicColossusGUID = creature->GetGUID();
+                        break;
+                    case NPC_RUBBLE:
+                        ++rubbleCount;
                         break;
                 }
             }
@@ -1061,6 +1066,9 @@ class instance_ulduar : public InstanceMapScript
                     case CRITERIA_GETTING_COLD_IN_HERE_25:
                         if (Creature* Hodir = instance->GetCreature(HodirGUID))
                             return Hodir->AI()->GetData(DATA_GETTING_COLD_IN_HERE) == 1;
+                    case CRITERIA_RUBBLE_N_ROLL_10:
+                    case CRITERIA_RUBBLE_N_ROLL_25:
+                        return rubbleCount >= 25;
                 }
 
                 return false;
