@@ -516,6 +516,12 @@ class boss_voice_of_yogg_saron : public CreatureScript
                 BossAI::JustDied(killer);
             }
 
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_YOGG_SARON, 1);
+            }
+
             void UpdateAI(uint32 diff) override
             {
                 if (!UpdateVictim())
@@ -740,7 +746,10 @@ class boss_sara : public CreatureScript
             void KilledUnit(Unit* victim) override
             {
                 if (victim->GetTypeId() == TYPEID_PLAYER && !me->IsInEvadeMode())
+                {
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_YOGG_SARON, 1);
                     Talk(SAY_SARA_KILL);
+                }
             }
 
             void EnterCombat(Unit* /*who*/) override
@@ -932,6 +941,12 @@ class boss_yogg_saron : public CreatureScript
                     me->AddLootMode(32);
             }
 
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_YOGG_SARON, 1);
+            }
+
             void JustDied(Unit* /*killer*/) override
             {
                 Talk(SAY_YOGG_SARON_DEATH);
@@ -1068,6 +1083,12 @@ class boss_brain_of_yogg_saron : public CreatureScript
 
             void UpdateAI(uint32 /*diff*/) override { }
 
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_YOGG_SARON, 1);
+            }
+
             void DoAction(int32 action) override
             {
                 switch (action)
@@ -1189,6 +1210,12 @@ class npc_guardian_of_yogg_saron : public CreatureScript
                 _events.ScheduleEvent(EVENT_DARK_VOLLEY, urand(10000, 15000));
             }
 
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_YOGG_SARON, 1);
+            }
+
             void UpdateAI(uint32 diff) override
             {
                 if (!UpdateVictim())
@@ -1254,6 +1281,12 @@ class npc_corruptor_tentacle : public CreatureScript
                 DoCastAOE(SPELL_ERUPT);
                 _events.ScheduleEvent(EVENT_CAST_RANDOM_SPELL, 1);
             }
+            
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_YOGG_SARON, 1);            
+            }
 
             void UpdateAI(uint32 diff) override
             {
@@ -1310,6 +1343,12 @@ class npc_constrictor_tentacle : public CreatureScript
                 DoCast(me, SPELL_TENTACLE_VOID_ZONE_2);
                 DoCastAOE(SPELL_ERUPT);
             }
+            
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_YOGG_SARON, 1);            
+            }
 
             void PassengerBoarded(Unit* passenger, int8 /*seatId*/, bool apply) override
             {
@@ -1359,6 +1398,12 @@ class npc_crusher_tentacle : public CreatureScript
                 DoCastAOE(SPELL_ERUPT);
 
                 _events.ScheduleEvent(EVENT_DIMINISH_POWER, urand(6000, 8000));
+            }
+            
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_YOGG_SARON, 1);            
             }
 
             void UpdateAI(uint32 diff) override
@@ -1411,6 +1456,12 @@ class npc_influence_tentacle : public CreatureScript
             void Reset() override
             {
                 DoCast(me, me->GetEntry() == NPC_SUIT_OF_ARMOR ? SPELL_NONDESCRIPT_1 : SPELL_NONDESCRIPT_2);
+            }
+            
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_YOGG_SARON, 1);            
             }
 
             void JustDied(Unit* /*killer*/) override
@@ -1476,6 +1527,12 @@ class npc_immortal_guardian : public CreatureScript
                 DoCast(me, SPELL_EMPOWERED);
                 DoCast(me, SPELL_RECENTLY_SPAWNED);
                 _events.ScheduleEvent(EVENT_DRAIN_LIFE, urand(3000, 13000));
+            }
+            
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_YOGG_SARON, 1);            
             }
 
             void DamageTaken(Unit* /*attacker*/, uint32& damage) override
@@ -1930,6 +1987,12 @@ class npc_laughing_skull : public CreatureScript
             {
                 me->SetReactState(REACT_PASSIVE);
                 DoCast(me, SPELL_LUNATIC_GAZE_SKULL);
+            }
+            
+            void KilledUnit(Unit* who) override
+            {
+                if (who->GetTypeId() == TYPEID_PLAYER)
+                    me->GetInstanceScript()->SetData(DATA_CRITERIA_YOGG_SARON, 1);            
             }
 
             // don't evade, otherwise the Lunatic Gaze aura is removed

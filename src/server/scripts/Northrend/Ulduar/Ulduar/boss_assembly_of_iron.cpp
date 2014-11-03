@@ -223,7 +223,10 @@ class boss_steelbreaker : public CreatureScript
             void KilledUnit(Unit* who) override
             {
                 if (who->GetTypeId() == TYPEID_PLAYER)
+                {
                     Talk(SAY_STEELBREAKER_SLAY);
+                    instance->SetData(DATA_CRITERIA_ASSEMBLY_OF_IRON, 1);
+                }
 
                 if (phase == 3)
                     DoCast(me, SPELL_ELECTRICAL_CHARGE);
@@ -368,7 +371,10 @@ class boss_runemaster_molgeim : public CreatureScript
             void KilledUnit(Unit* who) override
             {
                 if (who->GetTypeId() == TYPEID_PLAYER)
+                {
+                    instance->SetData(DATA_CRITERIA_ASSEMBLY_OF_IRON, 1);
                     Talk(SAY_MOLGEIM_SLAY);
+                }
             }
 
             void UpdateAI(uint32 diff) override
@@ -545,7 +551,10 @@ class boss_stormcaller_brundir : public CreatureScript
             void KilledUnit(Unit* who) override
             {
                 if (who->GetTypeId() == TYPEID_PLAYER)
+                {
+                    instance->SetData(DATA_CRITERIA_ASSEMBLY_OF_IRON, 1);
                     Talk(SAY_BRUNDIR_SLAY);
+                }
             }
 
             void UpdateAI(uint32 diff) override

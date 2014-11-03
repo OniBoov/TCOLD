@@ -843,6 +843,22 @@ class instance_ulduar : public InstanceMapScript
                     case DATA_DRIVE_ME_CRAZY:
                         IsDriveMeCrazyEligible = data ? true : false;
                         break;
+                    case DATA_CRITERIA_FLAME_LEVIATHAN:
+                    case DATA_CRITERIA_IGNIS:
+                    case DATA_CRITERIA_RAZORSCALE:
+                    case DATA_CRITERIA_XT_002:
+                    case DATA_CRITERIA_ASSEMBLY_OF_IRON:
+                    case DATA_CRITERIA_KOLOGARN:
+                    case DATA_CRITERIA_AURIAYA:
+                    case DATA_CRITERIA_HODIR:
+                    case DATA_CRITERIA_THORIM:
+                    case DATA_CRITERIA_FREYA:
+                    case DATA_CRITERIA_MIMIRON:
+                    case DATA_CRITERIA_GENERAL_VEZAX:
+                    case DATA_CRITERIA_YOGG_SARON:
+                        champConqOfUlduar[type - DATA_CRITERIA_FLAME_LEVIATHAN] = data;
+                        SaveToDB();
+                        break;
                     case EVENT_DESPAWN_ALGALON:
                         DoUpdateWorldState(WORLD_STATE_ALGALON_TIMER_ENABLED, 1);
                         DoUpdateWorldState(WORLD_STATE_ALGALON_DESPAWN_TIMER, 60);
@@ -1069,6 +1085,45 @@ class instance_ulduar : public InstanceMapScript
                     case CRITERIA_RUBBLE_N_ROLL_10:
                     case CRITERIA_RUBBLE_N_ROLL_25:
                         return rubbleCount >= 25;
+                    case CRITERIA_FLAME_LEVIATHAN_10:
+                    case CRITERIA_FLAME_LEVIATHAN_25:
+                        return champConqOfUlduar[0] == 0;
+                    case CRITERIA_IGNIS_10:
+                    case CRITERIA_IGNIS_25:
+                        return champConqOfUlduar[1] == 0;
+                    case CRITERIA_RAZORSCALE_10:
+                    case CRITERIA_RAZORSCALE_25:
+                        return champConqOfUlduar[2] == 0;
+                    case CRITERIA_XT_002_10:
+                    case CRITERIA_XT_002_25:
+                        return champConqOfUlduar[3] == 0;
+                    case CRITERIA_ASSEMBLY_OF_IRON_10:
+                    case CRITERIA_ASSEMBLY_OF_IRON_25:
+                        return champConqOfUlduar[4] == 0;
+                    case CRITERIA_KOLOGARN_10:
+                    case CRITERIA_KOLOGARN_25:
+                        return champConqOfUlduar[5] == 0;
+                    case CRITERIA_AURIAYA_10:
+                    case CRITERIA_AURIAYA_25:
+                        return champConqOfUlduar[6] == 0;
+                    case CRITERIA_HODIR_10:
+                    case CRITERIA_HODIR_25:
+                        return champConqOfUlduar[7] == 0;
+                    case CRITERIA_THORIM_10:
+                    case CRITERIA_THORIM_25:
+                        return champConqOfUlduar[8] == 0;
+                    case CRITERIA_FREYA_10:
+                    case CRITERIA_FREYA_25:
+                        return champConqOfUlduar[9] == 0;
+                    case CRITERIA_MIMIRON_10:
+                    case CRITERIA_MIMIRON_25:
+                        return champConqOfUlduar[10] == 0;
+                    case CRITERIA_GENERAL_VEZAX_10:
+                    case CRITERIA_GENERAL_VEZAX_25:
+                        return champConqOfUlduar[11] == 0;
+                    case CRITERIA_YOGG_SARON_10:
+                    case CRITERIA_YOGG_SARON_25:
+                        return champConqOfUlduar[12] == 0;
                 }
 
                 return false;
@@ -1157,6 +1212,7 @@ class instance_ulduar : public InstanceMapScript
             bool _summonYSKeeper[4];
             uint32 _maxArmorItemLevel;
             uint32 _maxWeaponItemLevel;
+            uint32 champConqOfUlduar[13];
         };
 
         InstanceScript* GetInstanceScript(InstanceMap* map) const override

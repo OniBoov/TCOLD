@@ -379,7 +379,10 @@ class boss_hodir : public CreatureScript
             void KilledUnit(Unit* who) override
             {
                 if (who->GetTypeId() == TYPEID_PLAYER)
+                {
                     Talk(SAY_SLAY);
+                    instance->SetData(DATA_CRITERIA_HODIR, 1);
+                }
             }
 
             void DamageTaken(Unit* /*who*/, uint32& damage) override
