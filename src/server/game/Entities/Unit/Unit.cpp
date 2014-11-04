@@ -7149,10 +7149,10 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
             if (dummySpell->Id == 49028)
             {
                 // 1 dummy aura for dismiss rune blade
-                if (effIndex != 1)
+                if (effIndex != 1 || !damage || !procSpell)
                     return false;
 
-                Unit* pPet = NULL;
+                Unit* pPet = nullptr;
                 for (ControlList::const_iterator itr = m_Controlled.begin(); itr != m_Controlled.end(); ++itr) // Find Rune Weapon
                     if ((*itr)->GetEntry() == 27893)
                     {
@@ -7160,15 +7160,57 @@ bool Unit::HandleDummyAuraProc(Unit* victim, uint32 damage, AuraEffect* triggere
                         break;
                     }
 
-                if (pPet && pPet->GetVictim() && damage && procSpell)
-                {
-                    uint32 procDmg = damage / 2;
-                    pPet->SendSpellNonMeleeDamageLog(pPet->GetVictim(), procSpell->Id, procDmg, procSpell->GetSchoolMask(), 0, 0, false, 0, false);
-                    pPet->DealDamage(pPet->GetVictim(), procDmg, NULL, SPELL_DIRECT_DAMAGE, procSpell->GetSchoolMask(), procSpell, true);
-                    break;
-                }
-                else
+                if (!pPet)
                     return false;
+
+                Unit* petTarget = pPet->GetVictim();
+
+                if (!petTarget || !petTarget->IsAlive())
+                    return false;
+
+                if (procSpell->SpellIconID == 2721)
+                {
+                    pPet->CastSpell(petTarget, 55095, true);
+
+                    if (Aura* aur = petTarget->GetAura(55095, pPet->GetGUID()))
+                        if (AuraEffect const* epidemic = GetAuraEffect(SPELL_AURA_ADD_FLAT_MODIFIER, SPELLFAMILY_DEATHKNIGHT, 234, EFFECT_0))
+                        {
+                            aur->SetMaxDuration(epidemic->GetAmount() + aur->GetMaxDuration());
+                            aur->SetDuration(aur->GetMaxDuration());
+                        }
+                }
+                else if (procSpell->SpellIconID == 2719)
+                {
+                    pPet->CastSpell(petTarget, 55078, true);
+
+                    if (Aura* aur = petTarget->GetAura(55078, pPet->GetGUID()))
+                        if (AuraEffect const* epidemic = GetAuraEffect(SPELL_AURA_ADD_FLAT_MODIFIER, SPELLFAMILY_DEATHKNIGHT, 234, EFFECT_0))
+                        {
+                            aur->SetMaxDuration(epidemic->GetAmount() + aur->GetMaxDuration());
+                            aur->SetDuration(aur->GetMaxDuration());
+                        }
+                }
+
+                if (int32 diseases = int32(petTarget->GetDiseasesByCaster(pPet->GetGUID())))
+                {
+                    // Blood Strike
+                    if (procSpell->SpellFamilyFlags[0] & 0x400000)
+                        AddPct(damage, procSpell->Effects[EFFECT_2].CalcValue() * diseases / 2);
+                    // Obliterate
+                    else if (procSpell->SpellFamilyFlags[1] & 0x20000)
+                        AddPct(damage, procSpell->Effects[EFFECT_2].CalcValue() * diseases / 2);
+                    // Blood-Caked Strike - Blood-Caked Blade
+                    else if (procSpell->SpellIconID == 1736)
+                        AddPct(damage, diseases * 50.5f);
+                    // Heart Strike
+                    else if (procSpell->SpellFamilyFlags[0] & 0x1000000)
+                        AddPct(damage, procSpell->Effects[EFFECT_2].CalcValue() * diseases);
+                }
+
+                damage /= 2;
+                pPet->SendSpellNonMeleeDamageLog(petTarget, procSpell->Id, damage, procSpell->GetSchoolMask(), 0, 0, false, 0, false);
+                pPet->DealDamage(petTarget, damage, NULL, SPELL_DIRECT_DAMAGE, procSpell->GetSchoolMask(), procSpell, false);
+                return true;
             }
             // Mark of Blood
             if (dummySpell->Id == 49005)
