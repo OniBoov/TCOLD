@@ -122,6 +122,7 @@ class boss_kologarn : public CreatureScript
             Vehicle* vehicle;
             bool left, right;
             bool _ifLooks;
+            bool _armDied;
             ObjectGuid eyebeamTarget;
 
             void EnterCombat(Unit* /*who*/) override
@@ -213,6 +214,7 @@ class boss_kologarn : public CreatureScript
                     if (!right && !left)
                         events.ScheduleEvent(EVENT_STONE_SHOUT, 5000);
 
+                    _armDied = true;
                     instance->DoStartTimedAchievement(ACHIEVEMENT_TIMED_TYPE_EVENT, CRITERIA_DISARMED);
                 }
                 else
@@ -228,6 +230,8 @@ class boss_kologarn : public CreatureScript
                 {
                     case DATA_IF_LOOKS_COULD_KILL:
                         return _ifLooks ? 1 : 0;
+                    case DATA_WITH_OPEN_ARMS:
+                        return _armDied ? 0 : 1;
                     default:
                         break;
                 }

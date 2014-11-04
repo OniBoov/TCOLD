@@ -329,6 +329,8 @@ enum UlduarAchievementCriteriaIds
     CRITERIA_CHEESE_THE_FREEZE_25    = 10261,
     CRITERIA_RUBBLE_N_ROLL_10        = 10290,
     CRITERIA_RUBBLE_N_ROLL_25        = 10133,
+    CRITERIA_WITH_OPEN_ARMS_10       = 10285,
+    CRITERIA_WITH_OPEN_ARMS_25       = 10095,
     // Champion/Conqueror of Ulduar
     CRITERIA_FLAME_LEVIATHAN_10                         = 10042,
     CRITERIA_IGNIS_10                                   = 10342,
@@ -424,6 +426,7 @@ enum UlduarData
     DATA_GETTING_COLD_IN_HERE,
     DATA_COOLEST_FRIENDS,
     DATA_CHEESE_THE_FREEZE,
+    DATA_WITH_OPEN_ARMS,
 
     DATA_CRITERIA_FLAME_LEVIATHAN,  // Achievement IDs: 10042,10352
     DATA_CRITERIA_IGNIS,            // Achievement IDs: 10342,10355

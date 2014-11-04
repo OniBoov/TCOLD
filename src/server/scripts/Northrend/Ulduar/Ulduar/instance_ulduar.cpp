@@ -1085,6 +1085,10 @@ class instance_ulduar : public InstanceMapScript
                     case CRITERIA_GETTING_COLD_IN_HERE_25:
                         if (Creature* Hodir = instance->GetCreature(HodirGUID))
                             return Hodir->AI()->GetData(DATA_GETTING_COLD_IN_HERE) == 1;
+                    case CRITERIA_WITH_OPEN_ARMS_10:
+                    case CRITERIA_WITH_OPEN_ARMS_25:
+                        if (Creature* kologarn = instance->GetCreature(KologarnGUID))
+                            return !kologarn->AI()->GetData(DATA_WITH_OPEN_ARMS) == 1;
                     case CRITERIA_RUBBLE_N_ROLL_10:
                     case CRITERIA_RUBBLE_N_ROLL_25:
                         return rubbleCount >= 25;
