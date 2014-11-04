@@ -191,6 +191,8 @@ enum UlduarNPCs
     NPC_MERCENARY_SOLDIER_H                 = 32883,
     NPC_RUNIC_COLOSSUS                      = 32872,
     NPC_RUNE_GIANT                          = 32873,
+
+    NPC_SANCTUM_SENTRY                      = 34014
 };
 
 enum UlduarGameObjects

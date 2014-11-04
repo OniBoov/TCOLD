@@ -47,7 +47,7 @@ enum AuriayaSpells
 
 enum AuriayaNPCs
 {
-    NPC_SANCTUM_SENTRY                           = 34014,
+    //NPC_SANCTUM_SENTRY                           = 34014,
     NPC_FERAL_DEFENDER                           = 34035,
     NPC_FERAL_DEFENDER_TRIGGER                   = 34096,
     NPC_SEEPING_TRIGGER                          = 34098,

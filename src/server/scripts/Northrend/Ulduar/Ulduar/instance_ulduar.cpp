@@ -85,6 +85,7 @@ class instance_ulduar : public InstanceMapScript
                 IsDriveMeCrazyEligible = true;
                 _algalonSummoned = false;
                 _summonAlgalon = false;
+                SanctumSentries.clear();
 
                 memset(_summonObservationRingKeeper, 0, sizeof(_summonObservationRingKeeper));
                 memset(_summonYSKeeper, 0, sizeof(_summonYSKeeper));
@@ -157,6 +158,7 @@ class instance_ulduar : public InstanceMapScript
             ObjectGuid RunicColossusGUID;
             uint32 rubbleCount;
             bool stunned;
+            std::list<Creature*>SanctumSentries;
 
             void FillInitialWorldStates(WorldPacket& packet) override
             {
@@ -433,6 +435,9 @@ class instance_ulduar : public InstanceMapScript
                     case NPC_RUBBLE:
                         ++rubbleCount;
                         break;
+                    case NPC_SANCTUM_SENTRY:
+                        SanctumSentries.push_back(creature);
+                        break;
                 }
             }
 
@@ -704,13 +709,19 @@ class instance_ulduar : public InstanceMapScript
                     case BOSS_RAZORSCALE:
                     case BOSS_XT002:
                     case BOSS_ASSEMBLY_OF_IRON:
-                    case BOSS_AURIAYA:
                     case BOSS_VEZAX:
                     case BOSS_YOGG_SARON:
                         break;
                     case BOSS_MIMIRON:
                         if (state == DONE)
                             instance->SummonCreature(NPC_MIMIRON_OBSERVATION_RING, ObservationRingKeepersPos[3]);
+                        break;
+                    case BOSS_AURIAYA:
+                        if (state != DONE && state != IN_PROGRESS)
+                            for (std::list<Creature*>::iterator itr = SanctumSentries.begin(); itr != SanctumSentries.end(); ++itr)
+                                 if (Creature* sentry = *itr)
+                                     if (!sentry->IsAlive())
+                                         sentry->Respawn(true);
                         break;
                     case BOSS_FREYA:
                         if (state == DONE)
@@ -852,7 +863,7 @@ class instance_ulduar : public InstanceMapScript
                     case DATA_CRITERIA_IGNIS:
                     case DATA_CRITERIA_RAZORSCALE:
                     case DATA_STUNNED:
-                        stunned = bool(data);
+                        stunned = data ? true : false;
                         break;
                     case DATA_CRITERIA_XT_002:
                     case DATA_CRITERIA_ASSEMBLY_OF_IRON:
