@@ -93,6 +93,12 @@ enum Yells
     EMOTE_STONE_GRIP                        = 8
 };
 
+enum Data
+{
+    DATA_IF_LOOKS_COULD_KILL,
+    DATA_EYEBEAM_TARGET
+};
+
 class boss_kologarn : public CreatureScript
 {
     public:
@@ -115,6 +121,7 @@ class boss_kologarn : public CreatureScript
 
             Vehicle* vehicle;
             bool left, right;
+            bool _ifLooks;
             ObjectGuid eyebeamTarget;
 
             void EnterCombat(Unit* /*who*/) override
@@ -138,6 +145,7 @@ class boss_kologarn : public CreatureScript
             void Reset() override
             {
                 _Reset();
+                _ifLooks = true;
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE);
                 eyebeamTarget.Clear();
             }
@@ -214,6 +222,31 @@ class boss_kologarn : public CreatureScript
                 }
             }
 
+            uint32 GetData(uint32 type) const override
+            {
+                switch (type)
+                {
+                    case DATA_IF_LOOKS_COULD_KILL:
+                        return _ifLooks ? 1 : 0;
+                    default:
+                        break;
+                }
+            }
+
+            void SetData(uint32 uiType, uint32 uiData) override
+            {
+                if (uiType == DATA_IF_LOOKS_COULD_KILL)
+                    _ifLooks = uiData;
+            }
+
+            ObjectGuid GetGUID(int32 type) const override
+            {
+                if (DATA_EYEBEAM_TARGET)
+                    return eyebeamTarget;
+                
+                return ObjectGuid::Empty;
+            }
+
             void JustSummoned(Creature* summon) override
             {
                 switch (summon->GetEntry())
@@ -229,22 +262,6 @@ class boss_kologarn : public CreatureScript
                         // absence of break intended
                     default:
                         return;
-                }
-
-                summon->CastSpell(summon, SPELL_FOCUSED_EYEBEAM_PERIODIC, true);
-                summon->CastSpell(summon, SPELL_FOCUSED_EYEBEAM_VISUAL, true);
-                summon->SetReactState(REACT_PASSIVE);
-                // One of the above spells is a channeled spell, we need to clear this unit state for MoveChase to work
-                summon->ClearUnitState(UNIT_STATE_CASTING);
-
-                // Victim gets 67351
-                if (eyebeamTarget)
-                {
-                    if (Unit* target = ObjectAccessor::GetUnit(*summon, eyebeamTarget))
-                    {
-                        summon->Attack(target, false);
-                        summon->GetMotionMaster()->MoveChase(target);
-                    }
                 }
             }
 
@@ -328,6 +345,99 @@ class boss_kologarn : public CreatureScript
         {
             return GetUlduarAI<boss_kologarnAI>(creature);
         }
+};
+
+class TW_npc_focused_eyebeam : public CreatureScript
+{
+    public:
+    TW_npc_focused_eyebeam() : CreatureScript("TW_npc_focused_eyebeam") { }
+
+    CreatureAI* GetAI(Creature* creature) const
+    {
+        return new TW_npc_focused_eyebeamAI(creature);
+    }
+
+    struct TW_npc_focused_eyebeamAI : public ScriptedAI
+    {
+        TW_npc_focused_eyebeamAI(Creature* creature) : ScriptedAI(creature)
+        {
+            instance = me->GetInstanceScript();
+            kologarn = ObjectAccessor::GetCreature(*me, instance->GetGuidData(BOSS_KOLOGARN));
+            if (me->GetEntry() == NPC_FOCUSED_EYEBEAM)
+                me->CastSpell(kologarn, SPELL_FOCUSED_EYEBEAM_VISUAL_LEFT, true);
+            else if (me->GetEntry() == NPC_FOCUSED_EYEBEAM_RIGHT)
+                me->CastSpell(kologarn, SPELL_FOCUSED_EYEBEAM_VISUAL_RIGHT, true);
+            me->CastSpell(me, SPELL_FOCUSED_EYEBEAM_PERIODIC, true);
+            me->CastSpell(me, SPELL_FOCUSED_EYEBEAM_VISUAL, true);
+            me->SetReactState(REACT_PASSIVE);
+            me->ClearUnitState(UNIT_STATE_CASTING);
+        }
+
+        InstanceScript* instance;
+        Creature* kologarn;
+        bool inChase;
+
+        void Reset()
+        {
+            inChase = false;
+        }
+
+        void UpdateAI(uint32 /*diff*/) override
+        {
+            if (!inChase)
+            {
+                Player* target = ObjectAccessor::GetPlayer(*me, kologarn->GetAI()->GetGUID(DATA_EYEBEAM_TARGET));
+                me->Attack(target, false);
+                me->GetMotionMaster()->MoveChase(target);
+                inChase = true;
+            }
+        }
+    };
+};
+
+class TW_spell_kologarn_focused_eyebeam_damage : public SpellScriptLoader
+{
+    public:
+    TW_spell_kologarn_focused_eyebeam_damage() : SpellScriptLoader("TW_spell_kologarn_focused_eyebeam_damage") { }
+
+    class TW_spell_kologarn_focused_eyebeam_damage_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(TW_spell_kologarn_focused_eyebeam_damage_SpellScript);
+
+        void HandleScript(SpellEffIndex /*eff*/)
+        {
+            Unit* target = GetHitUnit();
+            if (!target)
+                return;
+
+            if (InstanceScript* instance = target->GetInstanceScript())
+            if (Creature* kologarn = ObjectAccessor::GetCreature(*target, instance->GetGuidData(BOSS_KOLOGARN)))
+                kologarn->GetAI()->SetData(DATA_IF_LOOKS_COULD_KILL, false);
+        }
+
+        void Register() override
+        {
+            OnEffectHitTarget += SpellEffectFn(TW_spell_kologarn_focused_eyebeam_damage_SpellScript::HandleScript, EFFECT_0, SPELL_EFFECT_SCHOOL_DAMAGE);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new TW_spell_kologarn_focused_eyebeam_damage_SpellScript();
+    }
+};
+
+class TW_achievement_if_looks_could_kill : public AchievementCriteriaScript
+{
+    public:
+    TW_achievement_if_looks_could_kill(const char* name) : AchievementCriteriaScript(name) {}
+
+    bool OnCheck(Player* /*source*/, Unit* target) override
+    {
+        if (target)
+            return target->GetAI()->GetData(DATA_IF_LOOKS_COULD_KILL) == 1;
+        return false;
+    }
 };
 
 class spell_ulduar_rubble_summon : public SpellScriptLoader
@@ -650,7 +760,8 @@ class spell_kologarn_summon_focused_eyebeam : public SpellScriptLoader
             void HandleForceCast(SpellEffIndex effIndex)
             {
                 PreventHitDefaultEffect(effIndex);
-                GetCaster()->CastSpell(GetCaster(), GetSpellInfo()->Effects[effIndex].TriggerSpell, true);
+                if (Player* target = ObjectAccessor::GetPlayer(*GetCaster(), GetCaster()->GetAI()->GetGUID(DATA_EYEBEAM_TARGET)))
+                    target->CastSpell(target, GetSpellInfo()->Effects[effIndex].TriggerSpell, true);;
             }
 
             void Register() override
@@ -677,4 +788,8 @@ void AddSC_boss_kologarn()
     new spell_ulduar_stone_grip();
     new spell_kologarn_stone_shout();
     new spell_kologarn_summon_focused_eyebeam();
+
+    new TW_npc_focused_eyebeam();
+    new TW_spell_kologarn_focused_eyebeam_damage();
+    new TW_achievement_if_looks_could_kill("TW_achievement_if_looks_could_kill");
 }
