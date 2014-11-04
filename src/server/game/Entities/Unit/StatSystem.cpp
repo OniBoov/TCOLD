@@ -1353,6 +1353,16 @@ void Guardian::UpdateAttackPowerAndDamage(bool ranged)
                 maximum = 0;
             SetBonusDamage(int32(maximum * 0.15f));
             bonusAP = maximum * 0.57f;
+
+            // Glyph of felguard
+            if (GetEntry() == ENTRY_FELGUARD)
+            {
+                if (AuraEffect* glyph = owner->GetAuraEffect(56246, EFFECT_0))
+                {
+                    float base_atkPower = GetModifierValue(UNIT_MOD_ATTACK_POWER, BASE_VALUE) * GetModifierValue(UNIT_MOD_ATTACK_POWER, BASE_PCT);
+                    bonusAP += CalculatePct(bonusAP + base_atkPower, glyph->GetAmount());
+                }
+            }
         }
         //water elementals benefit from mage's frost damage
         else if (GetEntry() == ENTRY_WATER_ELEMENTAL)
