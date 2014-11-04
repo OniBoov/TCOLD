@@ -1742,7 +1742,7 @@ public:
             {
                 // For others recalculate it from:
                 float HasteMelee = 0.0f;
-                // Increase hit from SPELL_AURA_MOD_HIT_CHANCE
+                // Increase haste based owners haste.
                 HasteMelee += (1-owner->m_modAttackSpeedPct[BASE_ATTACK])*100;
 
                 amount += int32(HasteMelee);
@@ -1751,7 +1751,7 @@ public:
 
         void Register() override
         {
-            DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_dk_rune_weapon_scaling_02_AuraScript::CalculateDamageDoneAmount, EFFECT_0, SPELL_AURA_MOD_DAMAGE_DONE);
+            //DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_dk_rune_weapon_scaling_02_AuraScript::CalculateDamageDoneAmount, EFFECT_0, SPELL_AURA_MOD_DAMAGE_DONE);
             DoEffectCalcAmount += AuraEffectCalcAmountFn(spell_dk_rune_weapon_scaling_02_AuraScript::CalculateAmountMeleeHaste, EFFECT_1, SPELL_AURA_MELEE_SLOW);
         }
     };
@@ -1765,4 +1765,6 @@ public:
 void AddSC_pet_spell_scripts()
 {
     new spell_gen_pet_calculate();
+    new spell_dk_pet_scaling_03();
+    new spell_dk_rune_weapon_scaling_02();
 }

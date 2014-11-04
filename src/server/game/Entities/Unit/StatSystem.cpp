@@ -1100,6 +1100,7 @@ void Creature::CalculateMinMaxDamage(WeaponAttackType attType, bool normalized, 
 #define ENTRY_FIRE_ELEMENTAL    15438
 #define ENTRY_GHOUL             26125
 #define ENTRY_BLOODWORM         28017
+#define ENTRY_RUNIC_WEAPON      27893
 
 bool Guardian::UpdateStats(Stats stat)
 {
@@ -1330,6 +1331,10 @@ void Guardian::UpdateAttackPowerAndDamage(bool ranged)
             bonusAP = owner->GetTotalAttackPowerValue(RANGED_ATTACK) * 0.22f * mod;
             SetBonusDamage(int32(owner->GetTotalAttackPowerValue(RANGED_ATTACK) * 0.1287f * mod));
         }
+        else if (GetEntry() == ENTRY_RUNIC_WEAPON)
+        {
+            bonusAP = owner->GetTotalAttackPowerValue(BASE_ATTACK);
+        }
         else if (IsPetGhoul()) //ghouls benefit from deathknight's attack power (may be summon pet or not)
         {
             bonusAP = owner->GetTotalAttackPowerValue(BASE_ATTACK) * 0.22f;
@@ -1403,6 +1408,12 @@ void Guardian::UpdateDamagePhysical(WeaponAttackType attType)
             int32 spellDmg = int32(m_owner->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_POS + SPELL_SCHOOL_FIRE)) - m_owner->GetUInt32Value(PLAYER_FIELD_MOD_DAMAGE_DONE_NEG + SPELL_SCHOOL_FIRE);
             if (spellDmg > 0)
                 bonusDamage = spellDmg * 0.4f;
+        }
+        else if (GetEntry() == ENTRY_RUNIC_WEAPON)
+        {
+            SetStatFloatValue(UNIT_FIELD_MINDAMAGE, m_owner->GetFloatValue(UNIT_FIELD_MINDAMAGE));
+            SetStatFloatValue(UNIT_FIELD_MAXDAMAGE, m_owner->GetFloatValue(UNIT_FIELD_MAXDAMAGE));
+            return;
         }
     }
 
