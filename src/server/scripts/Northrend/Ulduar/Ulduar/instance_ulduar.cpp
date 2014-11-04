@@ -89,6 +89,7 @@ class instance_ulduar : public InstanceMapScript
                 memset(_summonObservationRingKeeper, 0, sizeof(_summonObservationRingKeeper));
                 memset(_summonYSKeeper, 0, sizeof(_summonYSKeeper));
                 memset(champConqOfUlduar, 0, sizeof(champConqOfUlduar));
+                stunned                          = true;
             }
 
             // Creatures
@@ -155,6 +156,7 @@ class instance_ulduar : public InstanceMapScript
             ObjectGuid RuneGiantGUID;
             ObjectGuid RunicColossusGUID;
             uint32 rubbleCount;
+            bool stunned;
 
             void FillInitialWorldStates(WorldPacket& packet) override
             {
@@ -849,6 +851,9 @@ class instance_ulduar : public InstanceMapScript
                     case DATA_CRITERIA_FLAME_LEVIATHAN:
                     case DATA_CRITERIA_IGNIS:
                     case DATA_CRITERIA_RAZORSCALE:
+                    case DATA_STUNNED:
+                        stunned = bool(data);
+                        break;
                     case DATA_CRITERIA_XT_002:
                     case DATA_CRITERIA_ASSEMBLY_OF_IRON:
                     case DATA_CRITERIA_KOLOGARN:
@@ -1092,6 +1097,9 @@ class instance_ulduar : public InstanceMapScript
                     case CRITERIA_RUBBLE_N_ROLL_10:
                     case CRITERIA_RUBBLE_N_ROLL_25:
                         return rubbleCount >= 25;
+                    case CRITERIA_CANT_DO_THAT_WHILE_STUNNED_10:
+                    case CRITERIA_CANT_DO_THAT_WHILE_STUNNED_25:
+                        return stunned && GetBossState(BOSS_ASSEMBLY_OF_IRON) == DONE;
                     case CRITERIA_FLAME_LEVIATHAN_10:
                     case CRITERIA_FLAME_LEVIATHAN_25:
                         return champConqOfUlduar[0] == 0;

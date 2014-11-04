@@ -235,6 +235,8 @@ class boss_kologarn : public CreatureScript
                     default:
                         break;
                 }
+
+                return 0;
             }
 
             void SetData(uint32 uiType, uint32 uiData) override
@@ -245,7 +247,7 @@ class boss_kologarn : public CreatureScript
 
             ObjectGuid GetGUID(int32 type) const override
             {
-                if (DATA_EYEBEAM_TARGET)
+                if (type == DATA_EYEBEAM_TARGET)
                     return eyebeamTarget;
                 
                 return ObjectGuid::Empty;
