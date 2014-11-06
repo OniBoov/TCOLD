@@ -1179,9 +1179,11 @@ class npc_the_lich_king_escape_hor : public CreatureScript
                 }
             }
 
-            void JustSummoned(Creature* /*summon*/) override
+            void JustSummoned(Creature* summon) override
             {
                 ++_summonsCount;
+                if (Creature* jainaOrSylvanas = ObjectAccessor::GetCreature(*me, _instance->GetGuidData(DATA_ESCAPE_LEADER)))
+                    summon->AI()->AttackStart(jainaOrSylvanas);
             }
 
             void SummonedCreatureDies(Creature* /*summon*/, Unit* /*killer*/) override
