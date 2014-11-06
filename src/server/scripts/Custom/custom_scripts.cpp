@@ -1466,6 +1466,50 @@ public:
     }
 };
 
+// 60192 - Freezing Arrow
+class TW_spell_hun_freezing_arrow : public SpellScriptLoader
+{
+public:
+    TW_spell_hun_freezing_arrow() : SpellScriptLoader("TW_spell_hun_freezing_arrow") { }
+
+    class TW_spell_hun_freezing_arrow_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(TW_spell_hun_freezing_arrow_SpellScript);
+
+        bool Validate(SpellInfo const* spellInfo) override
+        {
+            if (!sSpellMgr->GetSpellInfo(spellInfo->Effects[0].TriggerSpell))
+                return false;
+            return true;
+        }
+
+        void TriggerTrap(SpellEffIndex effIndex)
+        {
+            PreventHitDefaultEffect(effIndex);
+            uint32 trigger_spell = GetSpellInfo()->Effects[effIndex].TriggerSpell;
+            Position pos = GetHitDest()->GetPosition();
+            GetCaster()->ToPlayer()->RemoveSpellCooldown(trigger_spell);
+            GetCaster()->CastSpell(pos.m_positionX, pos.m_positionY, pos.m_positionZ, trigger_spell, true);
+        }
+
+        void HandleHit(SpellEffIndex effIndex)
+        {
+            PreventHitDefaultEffect(effIndex);
+        }
+
+        void Register() override
+        {
+            OnEffectLaunch += SpellEffectFn(TW_spell_hun_freezing_arrow_SpellScript::TriggerTrap, EFFECT_0, SPELL_EFFECT_TRIGGER_MISSILE);
+            OnEffectHit += SpellEffectFn(TW_spell_hun_freezing_arrow_SpellScript::HandleHit, EFFECT_0, SPELL_EFFECT_TRIGGER_MISSILE);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new TW_spell_hun_freezing_arrow_SpellScript();
+    }
+};
+
 void AddSC_custom_scripts()
 {
     new TW_npc_argent_squire();
@@ -1485,4 +1529,5 @@ void AddSC_custom_scripts()
     new TW_spell_hun_animal_handler();
     new TW_spell_dk_avoidance_passive();
     new TW_spell_hun_roar_of_sacrifice();
+    new TW_spell_hun_freezing_arrow();
 }
