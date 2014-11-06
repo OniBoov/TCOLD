@@ -1411,8 +1411,8 @@ void Guardian::UpdateDamagePhysical(WeaponAttackType attType)
         }
         else if (GetEntry() == ENTRY_RUNIC_WEAPON)
         {
-            SetStatFloatValue(UNIT_FIELD_MINDAMAGE, m_owner->GetFloatValue(UNIT_FIELD_MINDAMAGE));
-            SetStatFloatValue(UNIT_FIELD_MAXDAMAGE, m_owner->GetFloatValue(UNIT_FIELD_MAXDAMAGE));
+            SetStatFloatValue(UNIT_FIELD_MINDAMAGE, m_owner->GetFloatValue(UNIT_FIELD_MINDAMAGE) / 2.f);
+            SetStatFloatValue(UNIT_FIELD_MAXDAMAGE, m_owner->GetFloatValue(UNIT_FIELD_MAXDAMAGE) / 2.f);
             return;
         }
     }
