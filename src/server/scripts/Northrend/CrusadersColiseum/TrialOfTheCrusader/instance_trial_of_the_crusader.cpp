@@ -233,6 +233,13 @@ class instance_trial_of_the_crusader : public InstanceMapScript
                 }
             }
 
+            void OnUnitDeath(Unit* unit) override
+            {
+                if (unit->GetTypeId() == TYPEID_PLAYER && IsEncounterInProgress())
+                    TributeToImmortalityEligible = false;
+
+            }
+
             bool SetBossState(uint32 type, EncounterState state) override
             {
                 if (!InstanceScript::SetBossState(type, state))
