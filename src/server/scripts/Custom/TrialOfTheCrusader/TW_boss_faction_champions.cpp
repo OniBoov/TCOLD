@@ -1,4 +1,4 @@
-/*
+a/*
  * Copyright (C) 2008-2012 TrinityCore <http://www.trinitycore.org/>
  * Copyright (C) 2006-2009 ScriptDev2 <https://scriptdev2.svn.sourceforge.net/>
  *
@@ -188,7 +188,7 @@ struct TW_boss_faction_championsAI : public ScriptedAI
                         temp->AI()->Talk(SAY_KILL_PLAYER);
 
 
-                instance->SetData(DATA_TRIBUTE_TO_IMMORTALITY_ELIGIBLE, 0);
+                //instance->SetData(DATA_TRIBUTE_TO_IMMORTALITY_ELIGIBLE, 0);
             }
         }
     }
