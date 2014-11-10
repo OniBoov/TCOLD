@@ -15,6 +15,11 @@ set(scripts_STAT_SRCS
   Custom/cs_custom.cpp
   Custom/custom_scripts.cpp
   Custom/Ulduar/TW_boss_thorim.cpp
+  Custom/TrialOfTheChampion/TW_boss_argent_challenge.cpp
+  Custom/TrialOfTheChampion/TW_boss_black_knight.cpp
+  Custom/TrialOfTheChampion/TW_boss_grand_champions.cpp
+  Custom/TrialOfTheChampion/TW_instance_trial_of_the_champion.cpp
+  Custom/TrialOfTheChampion/TW_trial_of_the_champion.cpp
   ${scripts_STAT_SRCS}
 #  ${sources_Custom}
 )
