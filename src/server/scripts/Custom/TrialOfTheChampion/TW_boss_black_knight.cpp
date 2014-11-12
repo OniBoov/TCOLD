@@ -174,8 +174,7 @@ public:
             bDeathArmyDone = false;
             bFight = false;
             iveHadWorse = true;
-            pAnnouncer = NULL;
-            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC|UNIT_FLAG_NON_ATTACKABLE);
+            pAnnouncer = NULL; 
 
             if (GameObject* go = ObjectAccessor::GetGameObject(*me, instance->GetGuidData(DATA_MAIN_GATE)))
                 instance->HandleGameObject(go->GetGUID(), false);
