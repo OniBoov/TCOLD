@@ -752,25 +752,6 @@ public:
     }
 };
 
-class TW_achievement_ive_had_worse : public AchievementCriteriaScript
-{
-    public:
-        TW_achievement_ive_had_worse() : AchievementCriteriaScript("TW_achievement_ive_had_worse")
-        {
-        }
-
-        bool OnCheck(Player* /*player*/, Unit* target) override
-        {
-            if (!target)
-                return false;
-
-            if (Creature* Knight = target->ToCreature())
-                if (Knight->AI()->GetData(DATA_IVE_HAD_WORSE) && Knight->GetMap()->ToInstanceMap()->IsHeroic())
-                    return true;
-
-            return false;
-        }
-};
 
 void AddSC_TW_boss_black_knight()
 {
@@ -778,5 +759,4 @@ void AddSC_TW_boss_black_knight()
     new TW_npc_risen_ghoul();
     new TW_npc_risen_announcer();
     new TW_npc_black_knight_skeletal_gryphon();
-    new TW_achievement_ive_had_worse();
 }
