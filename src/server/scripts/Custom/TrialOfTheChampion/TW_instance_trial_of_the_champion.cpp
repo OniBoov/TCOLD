@@ -91,22 +91,6 @@ public:
             uiArgentSoldierDeaths         = 0;
             TeamInInstance                = 0;
 
-            uiAnnouncerGUID.Clear();
-            blackknightGUID.Clear();
-            uiHighlordGUID.Clear();
-            uiMainGateGUID.Clear();
-            uiMainGate1GUID.Clear();
-            uiVarianGUID.Clear();
-            uiThrallGUID.Clear();
-            uiGrandChampionVehicle1GUID.Clear();
-            uiGrandChampionVehicle2GUID.Clear();
-            uiGrandChampionVehicle3GUID.Clear();
-            uiGrandChampion1GUID.Clear();
-            uiGrandChampion2GUID.Clear();
-            uiGrandChampion3GUID.Clear();
-            uiChampionLootGUID.Clear();
-            uiArgentChampionGUID.Clear();
-
             bDone = false;
             HasChestSpawned = false;
 
@@ -114,6 +98,8 @@ public:
             GrandChampionList.clear();
 
             memset(&m_auiEncounter, 0, sizeof(m_auiEncounter));
+
+            m_auiEncounter[0] = DONE;
         }
 
         bool IsEncounterInProgress() const
