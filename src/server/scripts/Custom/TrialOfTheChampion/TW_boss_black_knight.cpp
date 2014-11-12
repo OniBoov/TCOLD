@@ -123,6 +123,7 @@ public:
             instance = creature->GetInstanceScript();
             Phase = IDLE;
             bCredit = false;
+            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
         }
 
         InstanceScript* instance;
