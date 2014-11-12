@@ -440,6 +440,21 @@ public:
             return 0;
         }
 
+        ObjectGuid GetGuidData(uint32 type) const override
+        {
+            switch (type)
+            {
+                case DATA_ANNOUNCER:
+                    return uiAnnouncerGUID;
+                case DATA_MAIN_GATE:
+                    return uiMainGateGUID;
+                case DATA_MAIN_GATE1:
+                    return uiMainGate1GUID;
+            }
+
+            return ObjectGuid::Empty;
+        }
+
         void SetGuidData(uint32 uiType, ObjectGuid uiData) override
         {
             switch(uiType)
