@@ -693,6 +693,8 @@ public:
         {
             Start(false, true);
             instance = creature->GetInstanceScript();
+            me->SetFlag(UNIT_FIELD_FLAGS, 33554432); // meh
+            me->SetDisableGravity(true);
         }
 
         Creature* pHighlord;
