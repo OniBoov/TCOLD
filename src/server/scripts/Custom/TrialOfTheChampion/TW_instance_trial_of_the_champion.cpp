@@ -91,22 +91,6 @@ public:
             uiArgentSoldierDeaths         = 0;
             TeamInInstance                = 0;
 
-            uiAnnouncerGUID.Clear();
-            blackknightGUID.Clear();
-            uiHighlordGUID.Clear();
-            uiMainGateGUID.Clear();
-            uiMainGate1GUID.Clear();
-            uiVarianGUID.Clear();
-            uiThrallGUID.Clear();
-            uiGrandChampionVehicle1GUID.Clear();
-            uiGrandChampionVehicle2GUID.Clear();
-            uiGrandChampionVehicle3GUID.Clear();
-            uiGrandChampion1GUID.Clear();
-            uiGrandChampion2GUID.Clear();
-            uiGrandChampion3GUID.Clear();
-            uiChampionLootGUID.Clear();
-            uiArgentChampionGUID.Clear();
-
             bDone = false;
             HasChestSpawned = false;
 
@@ -114,6 +98,8 @@ public:
             GrandChampionList.clear();
 
             memset(&m_auiEncounter, 0, sizeof(m_auiEncounter));
+
+            m_auiEncounter[0] = DONE;
         }
 
         bool IsEncounterInProgress() const
@@ -326,23 +312,23 @@ public:
                             break;
                         case DONE:
                             ++uiGrandChampionsDeaths;
-                            if (uiGrandChampionsDeaths >= 3 && !HasChestSpawned)
-                            {
+                            //if (uiGrandChampionsDeaths >= 3 && !HasChestSpawned)
+                            //{
                                 if (Creature* pAnnouncer = instance->GetCreature(uiAnnouncerGUID))
                                 {
-                                    HasChestSpawned = true;
+                                    /*HasChestSpawned = true;
                                     pAnnouncer->AI()->SetData(DATA_RESET, 0);
                                     m_auiEncounter[0] = uiData;
                                     pAnnouncer->GetMotionMaster()->MovePoint(0, 748.309f, 619.487f, 411.171f);
                                     pAnnouncer->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
-                                    pAnnouncer->SummonGameObject(instance->IsHeroic() ? GO_CHAMPIONS_LOOT_H : GO_CHAMPIONS_LOOT, 746.59f, 618.49f, 411.09f, 1.42f, 0, 0, 0, 0, 90000000);
+                                    pAnnouncer->SummonGameObject(instance->IsHeroic() ? GO_CHAMPIONS_LOOT_H : GO_CHAMPIONS_LOOT, 746.59f, 618.49f, 411.09f, 1.42f, 0, 0, 0, 0, 90000000);*/
 
                                     for (std::list<ObjectGuid>::const_iterator itr = VehicleList.begin(); itr != VehicleList.end(); ++itr)
                                         if (Creature* unit = instance->GetCreature(*itr))
                                             if (unit->GetEntry() == NPC_ARGENT_WARHORSE || unit->GetEntry() == NPC_ARGENT_BATTLEWORG)
                                                 unit->DespawnOrUnsummon();
                                 }
-                            }
+                            //}
                             break;
                         case NOT_STARTED:
                             uiGrandChampionsDeaths = 0;
