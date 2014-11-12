@@ -210,20 +210,6 @@ public:
             Phase = INTRO;
         }
 
-        void MoveInLineOfSight(Unit* who) override
-        {
-            if (!who)
-                return;
-
-            if (Phase == IDLE && me->IsValidAttackTarget(who) && me->IsWithinDistInMap(who, 200.0f))
-            {
-                me->SetReactState(REACT_PASSIVE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
-                Phase = INTRO;
-            }
-        }
-
         void RemoveSummons()
         {
             if (SummonList.empty())
