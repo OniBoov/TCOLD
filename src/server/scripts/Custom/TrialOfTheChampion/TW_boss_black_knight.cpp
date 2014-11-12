@@ -123,6 +123,7 @@ public:
             instance = creature->GetInstanceScript();
             Phase = IDLE;
             bCredit = false;
+            me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC);
         }
 
         InstanceScript* instance;
@@ -695,6 +696,7 @@ public:
             instance = creature->GetInstanceScript();
             me->SetFlag(UNIT_FIELD_FLAGS, 33554432); // meh
             me->SetDisableGravity(true);
+            me->SetReactState(REACT_PASSIVE);
         }
 
         Creature* pHighlord;
