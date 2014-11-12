@@ -695,6 +695,7 @@ public:
             instance = creature->GetInstanceScript();
             me->SetFlag(UNIT_FIELD_FLAGS, 33554432); // meh
             me->SetDisableGravity(true);
+            me->SetReactState(REACT_PASSIVE);
         }
 
         Creature* pHighlord;
