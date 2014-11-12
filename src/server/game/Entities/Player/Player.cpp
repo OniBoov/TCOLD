@@ -20343,7 +20343,7 @@ void Player::SendAutoRepeatCancel(Unit* target)
 {
     WorldPacket data(SMSG_CANCEL_AUTO_REPEAT, target->GetPackGUID().size());
     data << target->GetPackGUID();                     // may be it's target guid
-    GetSession()->SendPacket(&data);
+    SendMessageToSet(&data, false);
 }
 
 void Player::SendExplorationExperience(uint32 Area, uint32 Experience)
@@ -24358,7 +24358,7 @@ Player* Player::GetNextRandomRaidMember(float radius)
     return nearMembers[randTarget];
 }
 
-PartyResult Player::CanUninviteFromGroup() const
+PartyResult Player::CanUninviteFromGroup(ObjectGuid guidMember) const
 {
     Group const* grp = GetGroup();
     if (!grp)
@@ -24400,6 +24400,9 @@ PartyResult Player::CanUninviteFromGroup() const
 
         if (InBattleground())
             return ERR_INVITE_RESTRICTED;
+
+        if (grp->IsLeader(guidMember))
+            return ERR_NOT_LEADER;
     }
 
     return ERR_PARTY_RESULT_OK;
