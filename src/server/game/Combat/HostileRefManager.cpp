@@ -33,7 +33,7 @@ HostileRefManager::~HostileRefManager()
 // The victim is hated than by them as well
 // use for buffs and healing threat functionality
 
-void HostileRefManager::threatAssist(Unit* victim, float baseThreat, SpellInfo const* threatSpell)
+void HostileRefManager::threatAssist(Unit* victim, float baseThreat, SpellInfo const* threatSpell, bool isHotTick)
 {
     if (getSize() == 0)
         return;
@@ -44,7 +44,13 @@ void HostileRefManager::threatAssist(Unit* victim, float baseThreat, SpellInfo c
     while (ref)
     {
         if (ThreatCalcHelper::isValidProcess(victim, ref->GetSource()->GetOwner(), threatSpell))
-            ref->GetSource()->doAddThreat(victim, threat);
+            if (isHotTick)
+            {
+                if (ref->GetSource()->getThreat(victim) != 0.0f)
+                    ref->GetSource()->doAddThreat(victim, threat);
+            }
+            else
+                ref->GetSource()->doAddThreat(victim, threat);
 
         ref = ref->next();
     }
