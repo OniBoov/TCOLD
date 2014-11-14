@@ -6167,7 +6167,9 @@ void AuraEffect::HandlePeriodicHealAurasTick(Unit* target, Unit* caster) const
     SpellPeriodicAuraLogInfo pInfo(this, heal, heal - gain, absorb, 0, 0.0f, crit);
     target->SendPeriodicAuraLog(&pInfo);
 
-    target->getHostileRefManager().threatAssist(caster, float(gain) * 0.5f, GetSpellInfo());
+    if (!target->getHostileRefManager().isEmpty)
+        if (target->getHostileRefManager().getFirst()->GetSource()->getThreat(caster) != 0.0f)
+            target->getHostileRefManager().threatAssist(caster, float(gain) * 0.5f, GetSpellInfo());
 
     bool haveCastItem = !GetBase()->GetCastItemGUID().IsEmpty();
 
