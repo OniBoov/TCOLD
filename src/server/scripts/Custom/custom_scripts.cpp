@@ -1510,6 +1510,53 @@ public:
     }
 };
 
+enum EarthLiving
+{
+    SPELL_BLESSING_OF_THE_ETERNALS = 51554
+};
+
+// -51940 - Earthliving Weapon (Passive) 
+class TW_spell_sha_eathliving_passive : public SpellScriptLoader
+{
+public:
+    TW_spell_sha_eathliving_passive() : SpellScriptLoader("TW_spell_sha_eathliving_passive") { }
+
+    class TW_spell_sha_eathliving_passive_AuraScript : public AuraScript
+    {
+        PrepareAuraScript(TW_spell_sha_eathliving_passive_AuraScript);
+
+        bool Validate(SpellInfo const* spellInfo) override
+        {
+            if (!sSpellMgr->GetSpellInfo(spellInfo->Effects[0].TriggerSpell))
+                return false;
+            return true;
+        }
+
+        bool CheckProc(ProcEventInfo& eventInfo)
+        {
+            uint32 chance = 20;
+            if (Player* modOwner = GetCaster()->ToPlayer())
+                modOwner->ApplySpellMod(GetSpellInfo()->Id, SPELLMOD_CHANCE_OF_SUCCESS, chance);
+
+            if (AuraEffect const* eternal = GetCaster()->GetAuraEffectOfRankedSpell(SPELL_BLESSING_OF_THE_ETERNALS, EFFECT_1))
+                if (eventInfo.GetProcTarget()->HealthBelowPctDamaged(35, eventInfo.GetHealInfo()->GetHitHeal()))
+                    chance += eternal->GetAmount();
+
+            return roll_chance_i(chance);
+        }
+
+        void Register() override
+        {
+            DoCheckProc += AuraCheckProcFn(TW_spell_sha_eathliving_passive_AuraScript::CheckProc);
+        }
+    };
+
+    AuraScript* GetAuraScript() const override
+    {
+        return new TW_spell_sha_eathliving_passive_AuraScript();
+    }
+};
+
 void AddSC_custom_scripts()
 {
     new TW_npc_argent_squire();
@@ -1530,4 +1577,5 @@ void AddSC_custom_scripts()
     new TW_spell_dk_avoidance_passive();
     new TW_spell_hun_roar_of_sacrifice();
     new TW_spell_hun_freezing_arrow();
+    new TW_spell_sha_eathliving_passive();
 }

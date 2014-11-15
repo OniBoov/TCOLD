@@ -878,9 +878,10 @@ class HealInfo
 private:
     uint32 m_heal;
     uint32 m_absorb;
+    uint32 m_hitheal;
 public:
-    explicit HealInfo(uint32 heal)
-        : m_heal(heal)
+    explicit HealInfo(uint32 heal, uint32 hitheal = 0)
+        : m_heal(heal), m_hitheal(hitheal)
     {
         m_absorb = 0;
     }
@@ -892,6 +893,7 @@ public:
     }
 
     uint32 GetHeal() const { return m_heal; }
+    uint32 GetHitHeal() const { return m_hitheal; }
 };
 
 class ProcEventInfo
@@ -1448,8 +1450,8 @@ class Unit : public WorldObject
         void Kill(Unit* victim, bool durabilityLoss = true);
         int32 DealHeal(Unit* victim, uint32 addhealth);
 
-        void ProcDamageAndSpell(Unit* victim, uint32 procAttacker, uint32 procVictim, uint32 procEx, uint32 amount, WeaponAttackType attType = BASE_ATTACK, SpellInfo const* procSpell = NULL, SpellInfo const* procAura = NULL);
-        void ProcDamageAndSpellFor(bool isVictim, Unit* target, uint32 procFlag, uint32 procExtra, WeaponAttackType attType, SpellInfo const* procSpell, uint32 damage, SpellInfo const* procAura = NULL);
+        void ProcDamageAndSpell(Unit* victim, uint32 procAttacker, uint32 procVictim, uint32 procEx, uint32 amount, WeaponAttackType attType = BASE_ATTACK, SpellInfo const* procSpell = NULL, SpellInfo const* procAura = NULL, uint32 hitAmount = NULL);
+        void ProcDamageAndSpellFor(bool isVictim, Unit* target, uint32 procFlag, uint32 procExtra, WeaponAttackType attType, SpellInfo const* procSpell, uint32 damage, SpellInfo const* procAura = NULL, uint32 hitDamage = NULL);
 
         void GetProcAurasTriggeredOnEvent(AuraApplicationList& aurasTriggeringProc, AuraApplicationList* procAuras, ProcEventInfo eventInfo);
         void TriggerAurasProcOnEvent(CalcDamageInfo& damageInfo);
