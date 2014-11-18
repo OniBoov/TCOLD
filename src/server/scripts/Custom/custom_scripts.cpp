@@ -1557,6 +1557,39 @@ public:
     }
 };
 
+// 74399 - Charge (LK Valk)
+class TW_spell_icc_valk_charge : public SpellScriptLoader
+{
+public:
+    TW_spell_icc_valk_charge() : SpellScriptLoader("TW_spell_icc_valk_charge") { }
+
+    class TW_spell_icc_valk_charge_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(TW_spell_icc_valk_charge_SpellScript);
+
+        void ChargeDest(SpellEffIndex effIndex)
+        {
+            PreventHitDefaultEffect(effIndex);
+            Position pos = GetHitDest()->GetPosition();
+            float angle = GetCaster()->GetRelativeAngle(pos.GetPositionX(), pos.GetPositionY());
+            float dist = GetCaster()->GetDistance2d(pos.GetPositionX(), pos.GetPositionY());
+            pos = GetCaster()->GetFirstCollisionPosition(dist, angle, pos.m_positionZ);
+
+            GetCaster()->GetMotionMaster()->MoveCharge(pos.m_positionX, pos.m_positionY, pos.m_positionZ);
+        }
+
+        void Register() override
+        {
+            OnEffectLaunch += SpellEffectFn(TW_spell_icc_valk_charge_SpellScript::ChargeDest, EFFECT_0, SPELL_EFFECT_CHARGE_DEST);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new TW_spell_icc_valk_charge_SpellScript();
+    }
+};
+
 void AddSC_custom_scripts()
 {
     new TW_npc_argent_squire();
@@ -1578,4 +1611,5 @@ void AddSC_custom_scripts()
     new TW_spell_hun_roar_of_sacrifice();
     new TW_spell_hun_freezing_arrow();
     new TW_spell_sha_eathliving_passive();
+    new TW_spell_icc_valk_charge();
 }
