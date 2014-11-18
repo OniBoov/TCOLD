@@ -1551,14 +1551,22 @@ class npc_valkyr_shadowguard : public CreatureScript
                                 if (triggers.empty())
                                     return;
 
+                                float destX, destY, destZ;
+                                me->GetPosition(destX, destY);
+                                destZ = 1055.0f;    // approximation, gets more precise later
+                                me->UpdateGroundPositionZ(destX, destY, destZ);
+                                me->GetMotionMaster()->MovePoint(POINT_GROUND, destX, destY, destZ);
+
                                 triggers.sort(Trinity::ObjectDistanceOrderPred(me));
                                 DoCast(target, SPELL_VALKYR_CARRY);
                                 _dropPoint.Relocate(triggers.front());
-                                _events.ScheduleEvent(EVENT_MOVE_TO_DROP_POS, 1500);
                             }
                         }
                         else
                             me->DespawnOrUnsummon();
+                        break;
+                    case POINT_GROUND:
+                        _events.ScheduleEvent(EVENT_MOVE_TO_DROP_POS, 1500);
                         break;
                     default:
                         break;
