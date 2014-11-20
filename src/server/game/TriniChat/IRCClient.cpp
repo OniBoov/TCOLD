@@ -30,7 +30,7 @@
 #endif*/
 // IRCClient Constructor
 IRCClient::IRCClient():
-	thread(nullptr)
+	thread(nullptr), Running(false)
 {
 //    for (int i = 0;i < 5;i++)
 //        sIRC->Script_Lock[i] = false;
@@ -40,8 +40,9 @@ IRCClient::~IRCClient()
 {
 	TC_LOG_ERROR("misc", "****** TriniChat Shutting Down ********");
 	// delete if not running
-	Disconnect();
-	delete thread;
+    if(sIRC->Running)
+        Disconnect();
+    delete thread;
 }
 
 void TrinityChatThread()
@@ -58,7 +59,7 @@ bool IRCClient::run()
     // before we begin we wait a few
     // mangos is still starting up.
     //std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    boost::this_thread::sleep(boost::posix_time::milliseconds(500));
+    boost::this_thread::sleep(boost::posix_time::milliseconds(1500));
     std::stringstream ss(sIRC->_bot_names);
     string temp = "";
     uint8 counter = 0;
@@ -107,6 +108,7 @@ bool IRCClient::run()
                 if (this->Login(sIRC->_Nick, sIRC->_User, sIRC->_Pass))
                 {
                     TC_LOG_ERROR("misc", "*** TriniChat: Logged In And Running!! *");
+                    sIRC->Running = true;
                     // While we are connected to the irc server keep listening for data on the socket
                     while (sIRC->Connected && !World::IsStopped())
 					{

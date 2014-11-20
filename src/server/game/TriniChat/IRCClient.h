@@ -53,6 +53,7 @@ enum CLINES
 struct Channels
 {
     std::string channel;
+    std::string wowchan;
     std::string password;
     bool split;
 };
@@ -103,6 +104,8 @@ public:
     //bool BeenToGMI(float posx, float posy, std::string player, std::string from);
     // IRCClient active
     bool Active;
+    // Is it running?
+    bool Running;
     // Connected to IRC
     bool Connected;
     // Socket indentifier
@@ -153,7 +156,7 @@ public:
     // IRC Nickname
     string _Nick;
     //Password for in-game channel
-    std::string _irc_pass[MAX_CONF_CHANNELS];
+    //std::string _irc_pass[MAX_CONF_CHANNELS];
     // Authentication type
     int _Auth;
     string _Auth_Nick;
@@ -193,11 +196,11 @@ public:
     // Array to store our IRC channels
     // each element will corrospond
     // with _wow_chan array below.
-    std::string _irc_chan[MAX_CONF_CHANNELS];
+    //std::string _irc_chan[MAX_CONF_CHANNELS];
     // Game Channel list
-    std::string _wow_chan[MAX_CONF_CHANNELS];
-	// split chats
-	std::array<Channels, MAX_CONF_CHANNELS> splitChannels;
+    //std::string _wow_chan[MAX_CONF_CHANNELS];
+	// new container for channel data
+	std::array<Channels, MAX_CONF_CHANNELS> channelData;
     // AutoJoin Options
     int ajoin;
     string ajchan;

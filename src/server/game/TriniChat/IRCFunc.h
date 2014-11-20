@@ -31,7 +31,7 @@ std::string Delink(std::string msg)
 {
     std::size_t pos;
 
-        while((pos = msg.find("|Htrade")) != std::string::npos)
+    while((pos = msg.find("|Htrade")) != std::string::npos)
     {
         std::size_t find1 = msg.find("|h", pos);
         msg.replace(pos, find1 - pos + 2, "\x2");
@@ -241,7 +241,7 @@ bool Channel_Valid(std::string Channel)
 {
     for (int i=1;i < sIRC->_chan_count + 1;i++)
     {
-        if (nocase_cmp(sIRC->_wow_chan[i], Channel)==0)
+        if (nocase_cmp(sIRC->channelData[i].wowchan, Channel)==0)
             return true;
     }
     return false;
@@ -251,8 +251,8 @@ std::string GetWoWChannel(std::string Channel)
 {
     for (int i=1;i < sIRC->_chan_count + 1;i++)
     {
-        if ("#" + sIRC->_irc_chan[i] == Channel)
-            return sIRC->_wow_chan[i];
+        if ("#" + sIRC->channelData[i].channel == Channel)
+            return sIRC->channelData[i].wowchan;
     }
     return "";
 }
@@ -261,8 +261,8 @@ std::string GetIRCChannel(std::string Channel)
 {
     for (int i=1;i < sIRC->_chan_count + 1;i++)
     {
-        if (sIRC->_wow_chan[i] == Channel)
-            return sIRC->_irc_chan[i];
+        if (sIRC->channelData[i].wowchan == Channel)
+            return sIRC->channelData[i].channel;
     }
     return "";
 }

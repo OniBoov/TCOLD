@@ -96,46 +96,37 @@ void IRCClient::Handle_IRC(std::string sData)
                 // Loop thru the channel array and send a command to join them on IRC.
                 for (int i=1;i < sIRC->_chan_count + 1;i++)
                 {
-                        if (sIRC->_irc_pass[i].size() > 0)
+                        if (sIRC->channelData[i].password.size() > 0)
 						{
-							//SendIRC("JOIN #" + sIRC->_irc_chan[i] + " " + sIRC->_irc_pass[i]);
 							if(!sWorld->getBoolConfig(CONFIG_ALLOW_TWO_SIDE_INTERACTION_CHANNEL))
 							{
-								bool split = false;
-								for(uint32 j=0;j<sIRC->splitChannels.size();++j)
-								{
-									if(sIRC->_irc_chan[i] == sIRC->splitChannels[j].channel)
-									{
-										SendIRC("JOIN #" + sIRC->_irc_chan[i] + "-alliance " + sIRC->_irc_pass[i]);
-										SendIRC("JOIN #" + sIRC->_irc_chan[i] + "-horde " + sIRC->_irc_pass[i]);
-										split = true;
-									}
-								}
-								if(!split)
-									SendIRC("JOIN #"+sIRC->_irc_chan[i]+" "+sIRC->_irc_pass[i]);
+                                if(sIRC->channelData[i].split)
+                                {
+                                    SendIRC("JOIN #" + sIRC->channelData[i].channel + "-alliance " + sIRC->channelData[i].password);
+                                    SendIRC("JOIN #" + sIRC->channelData[i].channel + "-horde " + sIRC->channelData[i].password);
+                                }
+                                else
+                                {
+                                    SendIRC("JOIN #"+sIRC->channelData[i].channel+" "+sIRC->channelData[i].password);
+                                }
 							}
 							else
-								SendIRC("JOIN #" + sIRC->_irc_chan[i] + " " + sIRC->_irc_pass[i]);
+								SendIRC("JOIN #" + sIRC->channelData[i].channel + " " + sIRC->channelData[i].password);
 						}
                         else
 						{
 							if(!sWorld->getBoolConfig(CONFIG_ALLOW_TWO_SIDE_INTERACTION_CHANNEL))
 							{
-								bool split = false;
-								for(uint32 j=0;j<sIRC->splitChannels.size();++j)
-								{
-									if(sIRC->_irc_chan[i] == sIRC->splitChannels[j].channel)
-									{
-										SendIRC("JOIN #" + sIRC->_irc_chan[i] + "-alliance");
-										SendIRC("JOIN #" + sIRC->_irc_chan[i] + "-horde");
-										split = true;
-									}
-								}
-								if(!split)
-									SendIRC("JOIN #" + sIRC->_irc_chan[i]);
+                                if(sIRC->channelData[i].split)
+                                {
+                                    SendIRC("JOIN #" + sIRC->channelData[i].channel + "-alliance");
+                                    SendIRC("JOIN #" + sIRC->channelData[i].channel + "-horde");
+                                }
+                                else
+                                    SendIRC("JOIN #" + sIRC->channelData[i].channel);
 							}
 							else
-								SendIRC("JOIN #" + sIRC->_irc_chan[i]);
+								SendIRC("JOIN #" + sIRC->channelData[i].channel);
 						}
                 }
                 // See if there's a log channel available, if so: join it.
@@ -436,9 +427,9 @@ void IRCClient::Send_IRC_Channel(std::string sChannel, std::string sMsg, bool No
 	if (!sWorld->getBoolConfig(CONFIG_ALLOW_TWO_SIDE_INTERACTION_CHANNEL))
 	{
         bool split = false;
-        for(uint32 i=0;i<splitChannels.size();++i)
+        for(uint32 i=0;i<channelData.size();++i)
         {
-            if(splitChannels[i].channel == sChannel)
+            if(channelData[i].channel == sChannel)
                 split = true;
         }
         if(split)
@@ -475,7 +466,7 @@ void IRCClient::Send_IRC_Channel(std::string sChannel, std::string sMsg, bool No
 void IRCClient::Send_IRC_Channels(std::string sMsg)
 {
     for (int i=1;i < sIRC->_chan_count + 1;i++)
-        Send_IRC_Channel(sIRC->_irc_chan[i], sMsg);
+        Send_IRC_Channel(sIRC->channelData[i].channel, sMsg);
 }
 
 // This function is called in ChatHandler.cpp, any channel chat from wow will come

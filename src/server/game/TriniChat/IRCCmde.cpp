@@ -75,7 +75,7 @@ void IRCCmd::Handle_Login(_CDATA *CD)
                         if (sIRC->_op_gm == 1 && GMLevel >= sIRC->_op_gm_lev)
                         {
                             for (int i=1;i < sIRC->_chan_count + 1;i++)
-                            sIRC->SendIRC("MODE #"+sIRC->_irc_chan[i]+" +o "+CD->USER);
+                            sIRC->SendIRC("MODE #"+sIRC->channelData[i].channel+" +o "+CD->USER);
                         }
                     }
                 }

@@ -1309,33 +1309,34 @@ void World::LoadConfigSettings(bool reload)
         std::string ci = "irc.chan_" + ss.str();
         std::string pw = "irc.pass_" + ss.str();
         std::string sp = "split.chan_" + ss.str();
+        std::string wi = "wow.chan_" + ss.str();
         std::string t_chan = sConfigMgr->GetStringDefault(ci.c_str(), "");
         if (t_chan.size() > 0)
         {
             sIRC->_chan_count++;
-            sIRC->_irc_chan[sIRC->_chan_count] = t_chan;
-            sIRC->_irc_pass[sIRC->_chan_count] = sConfigMgr->GetStringDefault(pw.c_str(), t_chan.c_str());
+            //sIRC->_irc_chan[sIRC->_chan_count] = t_chan;
+            //sIRC->_irc_pass[sIRC->_chan_count] = sConfigMgr->GetStringDefault(pw.c_str(), t_chan.c_str());
             // custom channel config
-            sIRC->splitChannels[sIRC->_chan_count].channel = t_chan;
-            sIRC->splitChannels[sIRC->_chan_count].password = sConfigMgr->GetStringDefault(pw.c_str(), t_chan.c_str());
-            sIRC->splitChannels[sIRC->_chan_count].split = sConfigMgr->GetBoolDefault(sp.c_str(), false);
+            sIRC->channelData[sIRC->_chan_count].channel = t_chan;
+            sIRC->channelData[sIRC->_chan_count].wowchan = sConfigMgr->GetStringDefault(wi.c_str(), t_chan.c_str());
+            sIRC->channelData[sIRC->_chan_count].password = sConfigMgr->GetStringDefault(pw.c_str(), t_chan.c_str());
+            sIRC->channelData[sIRC->_chan_count].split = sConfigMgr->GetBoolDefault(sp.c_str(), false);
             // end custom channel config
-            ci = "wow.chan_" + ss.str();
-            sIRC->_wow_chan[sIRC->_chan_count] = sConfigMgr->GetStringDefault(ci.c_str(), t_chan.c_str());
+            //sIRC->_wow_chan[sIRC->_chan_count] = sConfigMgr->GetStringDefault(wi.c_str(), t_chan.c_str());
         }
     }
-    sIRC->JoinMsg = sConfigMgr->GetStringDefault("irc.joinmsg", "TriniChat $Ver for Trinitycore 3.3.x");
+    sIRC->JoinMsg = sConfigMgr->GetStringDefault("irc.joinmsg", "TriniChat $Ver for Trinitycore 3.3.5");
     sIRC->RstMsg  = sConfigMgr->GetStringDefault("irc.rstmsg", "TriniChat Is Restarting, I Will Be Right Back!");
     sIRC->kikmsg = sConfigMgr->GetStringDefault("irc.kickmsg", "Do Not Kick Me Again, Severe Actions Will Be Taken!");
 
     // IRC LINES
-    sIRC->ILINES[WOW_IRC] = sConfigMgr->GetStringDefault("chat.wow_irc", "\003<WoW>[\002$Name($Level)\002\003] $Msg");
-    sIRC->ILINES[IRC_WOW] = sConfigMgr->GetStringDefault("chat.irc_wow", "\003<IRC>[$Name]: $Msg");
-    sIRC->ILINES[JOIN_WOW] = sConfigMgr->GetStringDefault("chat.join_wow", "\00312>>\00304 $Name \003Joined The Channel!");
+    sIRC->ILINES[WOW_IRC] = sConfigMgr->GetStringDefault("chat.wow_irc", "\003[\002[$Level]$Name\002\003] $Msg");
+    sIRC->ILINES[IRC_WOW] = sConfigMgr->GetStringDefault("chat.irc_wow", "\003[$Name]: $Msg");
+    sIRC->ILINES[JOIN_WOW] = sConfigMgr->GetStringDefault("chat.join_wow", "\003$Name \003Joined The Channel!");
     sIRC->ILINES[JOIN_IRC] = sConfigMgr->GetStringDefault("chat.join_irc", "\003[$Name]: Has Joined IRC!");
-    sIRC->ILINES[LEAVE_WOW] = sConfigMgr->GetStringDefault("chat.leave_wow", "\00312<<\00304 $Name \003Left The Channel!");
+    sIRC->ILINES[LEAVE_WOW] = sConfigMgr->GetStringDefault("chat.leave_wow", "\0030 $Name \003Left The Channel!");
     sIRC->ILINES[LEAVE_IRC] = sConfigMgr->GetStringDefault("chat.leave_irc", "\003[$Name]: Has Left IRC!");
-    sIRC->ILINES[CHANGE_NICK] = sConfigMgr->GetStringDefault("chat.change_nick", "\003<> $Name Is Now Known As $NewName!");
+    sIRC->ILINES[CHANGE_NICK] = sConfigMgr->GetStringDefault("chat.change_nick", "\003$Name Is Now Known As $NewName!");
 
     // TriniChat Options
     sIRC->_MCA = sConfigMgr->GetIntDefault("irc.maxattempt", 10);
