@@ -1499,8 +1499,8 @@ class npc_valkyr_shadowguard : public CreatureScript
                 if (!IsHeroic())
                     return;
 
-                if (!me->HasAuraType(SPELL_AURA_CONTROL_VEHICLE))
-                    return;
+                //if (!me->HasAuraType(SPELL_AURA_CONTROL_VEHICLE))
+                    //return;
 
                 if (me->HealthBelowPctDamaged(50, damage))
                 {
