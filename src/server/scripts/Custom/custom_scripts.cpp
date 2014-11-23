@@ -291,10 +291,6 @@ enum eArgentFactionRiders
 
     DATA_PLAYER = 1,
     DATA_TYPE = 2,
-    DATA_DEFEATED = 3,
-
-    GOSSIP_TEXTID_CHAMPION = 14421,
-    GOSSIP_TEXTID_VALIANT = 14384
 };
 
 #define GOSSIP_FACTION_RIDER_1 "I am ready to fight!"
@@ -303,88 +299,6 @@ class TW_npc_argent_faction_rider : public CreatureScript
 {
     public:
     TW_npc_argent_faction_rider() : CreatureScript("TW_npc_argent_faction_rider") { }
-
-    bool OnGossipHello(Player* player, Creature* creature) override
-    {
-        // prevent gossip when defeated
-        if (creature->GetAI()->GetData(DATA_DEFEATED) > 0)
-            return false;
-
-        if (!player->HasAura(SPELL_AURA_TOURNAMENT_MOUNT))
-            return false;
-
-        uint32 type = creature->GetAI()->GetData(DATA_TYPE);
-
-        // valiants can only be challenged by own faction, while champions fight every faction
-        switch (type)
-        {
-            case TYPE_CHAMPION:
-            {
-                                  if (player->GetItemCount(ITEM_MARK_OF_CHAMPION, true) == 4)
-                                      return false;
-
-                                  if (player->GetQuestStatus(QUEST_AMONG_CHAMPIONS_H_DK) == QUEST_STATUS_INCOMPLETE ||
-                                      player->GetQuestStatus(QUEST_AMONG_CHAMPIONS_H) == QUEST_STATUS_INCOMPLETE ||
-                                      player->GetQuestStatus(QUEST_AMONG_CHAMPIONS_A_DK) == QUEST_STATUS_INCOMPLETE ||
-                                      player->GetQuestStatus(QUEST_AMONG_CHAMPIONS_A) == QUEST_STATUS_INCOMPLETE)
-                                  {
-                                      player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_FACTION_RIDER_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-                                  }
-                                  player->SEND_GOSSIP_MENU(GOSSIP_TEXTID_CHAMPION, creature->GetGUID());
-                                  break;
-            }
-            case TYPE_VALIANT_ALLIANCE:
-            {
-                                          if (player->GetItemCount(ITEM_MARK_OF_VALIANT, true) == 3)
-                                              return false;
-
-                                          if (player->GetQuestStatus(QUEST_GRAND_MELEE_EX) == QUEST_STATUS_INCOMPLETE ||
-                                              player->GetQuestStatus(QUEST_GRAND_MELEE_DA) == QUEST_STATUS_INCOMPLETE ||
-                                              player->GetQuestStatus(QUEST_GRAND_MELEE_GN) == QUEST_STATUS_INCOMPLETE ||
-                                              player->GetQuestStatus(QUEST_GRAND_MELEE_IF) == QUEST_STATUS_INCOMPLETE ||
-                                              player->GetQuestStatus(QUEST_GRAND_MELEE_SW) == QUEST_STATUS_INCOMPLETE)
-                                          {
-                                              player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_FACTION_RIDER_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-                                          }
-                                          player->SEND_GOSSIP_MENU(GOSSIP_TEXTID_VALIANT, creature->GetGUID());
-                                          break;
-            }
-            case TYPE_VALIANT_HORDE:
-            {
-                                       if (player->GetItemCount(ITEM_MARK_OF_VALIANT, true) == 3)
-                                           return false;
-
-                                       if (player->GetQuestStatus(QUEST_GRAND_MELEE_SM) == QUEST_STATUS_INCOMPLETE ||
-                                           player->GetQuestStatus(QUEST_GRAND_MELEE_UC) == QUEST_STATUS_INCOMPLETE ||
-                                           player->GetQuestStatus(QUEST_GRAND_MELEE_TB) == QUEST_STATUS_INCOMPLETE ||
-                                           player->GetQuestStatus(QUEST_GRAND_MELEE_SJ) == QUEST_STATUS_INCOMPLETE ||
-                                           player->GetQuestStatus(QUEST_GRAND_MELEE_OG) == QUEST_STATUS_INCOMPLETE)
-                                       {
-                                           player->ADD_GOSSIP_ITEM(GOSSIP_ICON_CHAT, GOSSIP_FACTION_RIDER_1, GOSSIP_SENDER_MAIN, GOSSIP_ACTION_INFO_DEF + 1);
-                                       }
-                                       player->SEND_GOSSIP_MENU(GOSSIP_TEXTID_VALIANT, creature->GetGUID());
-                                       break;
-            }
-        }
-        return true;
-    }
-
-    bool OnGossipSelect(Player* player, Creature* creature, uint32 /*sender*/, uint32 action) override
-    {
-        player->PlayerTalkClass->ClearMenus();
-
-        if (action == GOSSIP_ACTION_INFO_DEF + 1)
-        {
-            player->CLOSE_GOSSIP_MENU();
-
-            if (!player->GetVehicle())
-                return false;
-
-            creature->GetAI()->SetData(DATA_PLAYER, player->GetGUID());
-            creature->GetAI()->DoAction(EVENT_START);
-        }
-        return true;
-    }
 
     struct TW_npc_argent_faction_riderAI : public ScriptedAI
     {
@@ -395,14 +309,20 @@ class TW_npc_argent_faction_rider : public CreatureScript
         uint32 uiShieldTimer;
         uint32 uiThrustTimer;
         bool bCharge;
-        bool bDefeated;
         Position arenaCenter;
 
         ObjectGuid challengeeGUID;
 
+        void sGossipSelect(Player* player, uint32 /*menuId*/, uint32 /*gossipListId*/)
+        {
+            player->PlayerTalkClass->SendCloseGossip();
+            SetGuidData(DATA_PLAYER, player->GetGUID());
+            me->GetAI()->DoAction(EVENT_START);
+        }
+
         void Reset() override
         {
-            me->m_CombatDistance = 100.0f; // lawl, copied from zuldrak.cpp
+            me->m_CombatDistance = 100.0f;
             me->setFaction(35);
             me->SetFlag(UNIT_NPC_FLAGS, UNIT_NPC_FLAG_GOSSIP);
             DoCast(me, SPELL_READYJOUST_POSE_EFFECT, true);
@@ -412,7 +332,6 @@ class TW_npc_argent_faction_rider : public CreatureScript
             uiShieldTimer = 4000;
             uiThrustTimer = 2000;
             bCharge = false;
-            bDefeated = false;
 
             challengeeGUID.Clear();
 
@@ -422,17 +341,12 @@ class TW_npc_argent_faction_rider : public CreatureScript
                 arenaCenter.Relocate(8656.402f, 722.827f, 547.523f);
             else if (GetCustomType() == TYPE_VALIANT_HORDE)
                 arenaCenter.Relocate(8334.375f, 721.165f, 553.702f);
-
         }
 
         uint32 GetData(uint32 type) const override
         {
             if (type == DATA_TYPE)
                 return GetCustomType();
-
-            if (type == DATA_DEFEATED)
-                return bDefeated ? 1 : 0;
-
             return 0;
         }
 
@@ -576,7 +490,6 @@ class TW_npc_argent_faction_rider : public CreatureScript
                 if (Player* player = ObjectAccessor::GetPlayer(*me, challengeeGUID))
                 {
                     if (player->GetVehicle())
-                        //AttackStart(player->GetVehicle()->GetBase());
                         AttackStart(player->GetVehicleBase());
                     else
                         AttackStart(player);
@@ -586,9 +499,8 @@ class TW_npc_argent_faction_rider : public CreatureScript
 
         void DamageTaken(Unit* who, uint32& damage) override
         {
-            if (damage >= me->GetHealth() && who->GetTypeId() == TYPEID_PLAYER && !bDefeated)
+            if (damage >= me->GetHealth() && who->GetTypeId() == TYPEID_PLAYER/* && !bDefeated*/)
             {
-                bDefeated = true;
                 damage = 0;
                 GrantCredit(who);
                 me->setFaction(35);
@@ -608,50 +520,50 @@ class TW_npc_argent_faction_rider : public CreatureScript
             {
                 case TYPE_CHAMPION:
                 {
-                                      who->CastSpell(who, SPELL_MOUNTED_MELEE_VICTORY_C, true);
-                                      uint32 creditSpell = 0;
-                                      switch (me->GetEntry())
-                                      {
-                                          case NPC_EXODAR_CHAMPION:
-                                              creditSpell = SPELL_BESTED_EXODAR;
-                                              break;
-                                          case NPC_DARNASSUS_CHAMPION:
-                                              creditSpell = SPELL_BESTED_DARNASSUS;
-                                              break;
-                                          case NPC_STORMWIND_CHAMPION:
-                                              creditSpell = SPELL_BESTED_STORMWIND;
-                                              break;
-                                          case NPC_IRONFORGE_CHAMPION:
-                                              creditSpell = SPELL_BESTED_IRONFORGE;
-                                              break;
-                                          case NPC_GNOMEREGAN_CHAMPION:
-                                              creditSpell = SPELL_BESTED_GNOMEREGAN;
-                                              break;
-                                          case NPC_SILVERMOON_CHAMPION:
-                                              creditSpell = SPELL_BESTED_SILVERMOON;
-                                              break;
-                                          case NPC_THUNDER_BLUFF_CHAMPION:
-                                              creditSpell = SPELL_BESTED_THUNDER_BLUFF;
-                                              break;
-                                          case NPC_ORGRIMMAR_CHAMPION:
-                                              creditSpell = SPELL_BESTED_ORGRIMMAR;
-                                              break;
-                                          case NPC_SENJIN_CHAMPION:
-                                              creditSpell = SPELL_BESTED_SENJIN;
-                                              break;
-                                          case NPC_UNDERCITY_CHAMPION:
-                                              creditSpell = SPELL_BESTED_UNDERCITY;
-                                              break;
-                                      }
-                                      who->CastSpell(who, creditSpell, false);
-                                      who->CastSpell(who, creditSpell, false); // second cast for criteria check...which is checked before aura is applied...HILARIOUS!
-                                      break;
+                    who->CastSpell(who, SPELL_MOUNTED_MELEE_VICTORY_C, true);
+                    uint32 creditSpell = 0;
+                    switch (me->GetEntry())
+                    {
+                    case NPC_EXODAR_CHAMPION:
+                        creditSpell = SPELL_BESTED_EXODAR;
+                        break;
+                    case NPC_DARNASSUS_CHAMPION:
+                        creditSpell = SPELL_BESTED_DARNASSUS;
+                        break;
+                    case NPC_STORMWIND_CHAMPION:
+                        creditSpell = SPELL_BESTED_STORMWIND;
+                        break;
+                    case NPC_IRONFORGE_CHAMPION:
+                        creditSpell = SPELL_BESTED_IRONFORGE;
+                        break;
+                    case NPC_GNOMEREGAN_CHAMPION:
+                        creditSpell = SPELL_BESTED_GNOMEREGAN;
+                        break;
+                    case NPC_SILVERMOON_CHAMPION:
+                        creditSpell = SPELL_BESTED_SILVERMOON;
+                        break;
+                    case NPC_THUNDER_BLUFF_CHAMPION:
+                        creditSpell = SPELL_BESTED_THUNDER_BLUFF;
+                        break;
+                    case NPC_ORGRIMMAR_CHAMPION:
+                        creditSpell = SPELL_BESTED_ORGRIMMAR;
+                        break;
+                    case NPC_SENJIN_CHAMPION:
+                        creditSpell = SPELL_BESTED_SENJIN;
+                        break;
+                    case NPC_UNDERCITY_CHAMPION:
+                        creditSpell = SPELL_BESTED_UNDERCITY;
+                        break;
+                    }
+                    who->CastSpell(who, creditSpell, false);
+                    who->CastSpell(who, creditSpell, false); // second cast for criteria check...which is checked before aura is applied...HILARIOUS!
+                    break;
                 }
                 case TYPE_VALIANT_ALLIANCE:
                 case TYPE_VALIANT_HORDE:
                 {
-                                           who->CastSpell(who, SPELL_MOUNTED_MELEE_VICTORY_V, true);
-                                           break;
+                     who->CastSpell(who, SPELL_MOUNTED_MELEE_VICTORY_V, true);
+                     break;
                 }
             }
 
