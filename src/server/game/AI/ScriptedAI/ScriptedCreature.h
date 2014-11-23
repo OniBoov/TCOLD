@@ -267,6 +267,9 @@ struct ScriptedAI : public CreatureAI
 
     bool EnterEvadeIfOutOfCombatArea(uint32 const diff);
 
+    void SetAggroPulseEnabled(bool aggroPulse);
+    bool IsAggroPulseEnabled() const { return _isAggroPulseEnabled;  }
+
     // return true for heroic mode. i.e.
     //   - for dungeon in mode 10-heroic,
     //   - for raid in mode 10-Heroic
@@ -336,6 +339,7 @@ struct ScriptedAI : public CreatureAI
         Difficulty _difficulty;
         uint32 _evadeCheckCooldown;
         bool _isCombatMovementAllowed;
+        bool _isAggroPulseEnabled;
         bool _isHeroic;
 };
 
