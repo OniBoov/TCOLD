@@ -1015,7 +1015,7 @@ class TW_npc_vanity_argent_squire : public CreatureScript
                     me->GetMotionMaster()->MoveFollow(owner, PET_FOLLOW_DIST, PET_FOLLOW_ANGLE);
             }
 
-            void UpdateAI(uint32 diff)
+            void UpdateAI(uint32 /*diff*/)
             {
                 if (!me->HasAura(SPELL_SQUIRE_MOUNT_CHECK))
                     if (me->GetOwner()->ToPlayer()->HasAchieved(ACH_PONY_UP))
