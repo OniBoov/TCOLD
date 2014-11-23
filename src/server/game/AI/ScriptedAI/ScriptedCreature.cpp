@@ -102,8 +102,7 @@ ScriptedAI::ScriptedAI(Creature* creature) : CreatureAI(creature),
     me(creature),
     IsFleeing(false),
     _evadeCheckCooldown(2500),
-    _isCombatMovementAllowed(true),
-    _isAggroPulseEnabled(false)
+    _isCombatMovementAllowed(true)
 {
     _isHeroic = me->GetMap()->IsHeroic();
     _difficulty = Difficulty(me->GetMap()->GetSpawnMode());
@@ -399,11 +398,6 @@ void ScriptedAI::SetCombatMovement(bool allowMovement)
     _isCombatMovementAllowed = allowMovement;
 }
 
-void ScriptedAI::SetAggroPulseEnabled(bool aggroPulse)
-{
-    _isAggroPulseEnabled = aggroPulse;
-}
-
 enum NPCs
 {
     NPC_BROODLORD   = 12017,
@@ -471,9 +465,6 @@ void BossAI::_Reset()
 {
     if (!me->IsAlive())
         return;
-
-    // Disable this on resets.
-    SetAggroPulseEnabled(false);
 
     me->ResetLootMode();
     events.Reset();
@@ -588,11 +579,6 @@ void BossAI::UpdateAI(uint32 diff)
 
     if (me->HasUnitState(UNIT_STATE_CASTING))
         return;
-
-    // Hack - use carefully.
-    // Only sets in combat with zone if it's a dungeon or instanced map.
-    if (IsAggroPulseEnabled() && me->GetMap()->IsDungeon())
-        me->SetInCombatWithZone();
 
     while (uint32 eventId = events.ExecuteEvent())
         ExecuteEvent(eventId);

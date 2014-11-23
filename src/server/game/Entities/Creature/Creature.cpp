@@ -2124,7 +2124,7 @@ void Creature::SetInCombatWithZone()
             if (player->IsGameMaster())
                 continue;
 
-            if (player->IsAlive() && !player->HasAura(58984)) // Don't do anything if shadowmeld is still active
+            if (player->IsAlive())
             {
                 this->SetInCombatWith(player);
                 player->SetInCombatWith(this);

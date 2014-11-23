@@ -229,7 +229,6 @@ struct generic_halionAI : public BossAI
         events.ScheduleEvent(EVENT_CLEAVE, urand(8000, 10000));
         events.ScheduleEvent(EVENT_TAIL_LASH, 10000);
         events.ScheduleEvent(EVENT_BREATH, urand(10000, 15000));
-        SetAggroPulseEnabled(true);
     }
 
     void Reset() override
