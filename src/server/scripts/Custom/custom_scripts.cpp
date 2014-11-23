@@ -1590,6 +1590,28 @@ public:
     }
 };
 
+class TW_npc_gen_movable_cannon_hack : public CreatureScript
+{
+    public:
+        TW_npc_gen_movable_cannon_hack() : CreatureScript("TW_npc_gen_movable_cannon_hack") { }
+
+        struct TW_npc_gen_movable_cannon_hackAI : public PassiveAI
+        {
+            TW_npc_gen_movable_cannon_hackAI(Creature* creature) : PassiveAI(creature) { }
+
+            void OnCharmed(bool /*apply*/) override
+            {
+                me->SetControlled(false, UNIT_STATE_ROOT);
+                me->SetControlled(true, UNIT_STATE_ROOT);
+            }
+        };
+
+        CreatureAI* GetAI(Creature* creature) const override
+        {
+            return new TW_npc_gen_movable_cannon_hackAI(creature);
+        }
+};
+
 void AddSC_custom_scripts()
 {
     new TW_npc_argent_squire();
@@ -1612,4 +1634,5 @@ void AddSC_custom_scripts()
     new TW_spell_hun_freezing_arrow();
     new TW_spell_sha_eathliving_passive();
     new TW_spell_icc_valk_charge();
+    new TW_npc_gen_movable_cannon_hack();
 }
