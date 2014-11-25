@@ -21,6 +21,7 @@ set(scripts_STAT_SRCS
   Custom/TrialOfTheChampion/TW_instance_trial_of_the_champion.cpp
   Custom/TrialOfTheChampion/TW_trial_of_the_champion.h 
   Custom/TrialOfTheChampion/TW_trial_of_the_champion.cpp
+  Custom/WorldEvents/TW_pilgrim.cpp
   ${scripts_STAT_SRCS}
 #  ${sources_Custom}
 )
