@@ -1179,8 +1179,9 @@ class TW_npc_runic_smash : public CreatureScript
             TW_npc_runic_smashAI(Creature* creature) : ScriptedAI(creature)
             {
                 me->SetReactState(REACT_PASSIVE);
+                SetCombatMovement(false);
                 me->SetDisplayId(16925);
-                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
+                me->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE | UNIT_FLAG_IMMUNE_TO_PC);
                 ExplodeTimer = 10000;
             }
 
@@ -1191,6 +1192,8 @@ class TW_npc_runic_smash : public CreatureScript
 
             void UpdateAI(uint32 diff) override
             {
+                if (Creature* golem = ObjectAccessor::GetCreature(*me, me->GetInstanceScript()->GetGuidData(DATA_RUNIC_COLOSSUS)))
+                if (!golem->IsInCombat() && golem->IsAlive())
                 if (ExplodeTimer <= diff)
                 {
                     DoCastAOE(SPELL_RUNIC_SMASH, true);
