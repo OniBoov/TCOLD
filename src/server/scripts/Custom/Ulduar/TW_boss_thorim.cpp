@@ -1095,33 +1095,32 @@ class TW_npc_runic_colossus : public CreatureScript
             {
                 RunicSmashPhase = 0;
                 me->InterruptNonMeleeSpells(true);
+                summons.DespawnEntry(NPC_GOLEM_BUNNY);
                 me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NON_ATTACKABLE);
             }
 
             void UpdateAI(uint32 diff) override
             {
-                if (!me->IsInCombat())
-                     if (RunicSmashPhase == 1)
-                     {
-                         if (RunicSmashTimer <= diff)
-                         {
-                             Side = urand(0, 1);
-                             DoCast(me, Side ? SPELL_RUNIC_SMASH_LEFT : SPELL_RUNIC_SMASH_RIGHT);
-                             RunicSmashTimer = 1000;
-                             RunicSmashPhase = 2;
-                         }
-                         else RunicSmashTimer -= diff;
-                     }
+                if (RunicSmashPhase == 1)
+                {
+                    if (RunicSmashTimer <= diff)
+                    {
+                        Side = urand(0, 1);
+                        DoCast(me, Side ? SPELL_RUNIC_SMASH_LEFT : SPELL_RUNIC_SMASH_RIGHT);
+                        RunicSmashTimer = 1000;
+                        RunicSmashPhase = 2;
+                    }
+                    else RunicSmashTimer -= diff;
+                }
 
                 if (me->HasUnitState(UNIT_STATE_CASTING))
                     return;
 
-                if (!me->IsInCombat())
-                    if (RunicSmashPhase == 2)
-                    {
-                        RunicSmashPhase = 1;
-                        DoRunicSmash();
-                    }
+                if (RunicSmashPhase == 2)
+                {
+                    RunicSmashPhase = 1;
+                    DoRunicSmash();
+                }
 
                 if (!UpdateVictim())
                     return;
