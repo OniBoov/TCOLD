@@ -104,8 +104,6 @@ public:
     //bool BeenToGMI(float posx, float posy, std::string player, std::string from);
     // IRCClient active
     bool Active;
-    // Is it running?
-    bool Running;
     // Connected to IRC
     bool Connected;
     // Socket indentifier
@@ -276,7 +274,7 @@ public:
     // MAX_SCRIPT_INST
 
     IRCLog iLog;
-	IRCClient* thread;
+    IRCClient* thread;
 
 private:
     // Returns default chatline based on enum CLINES

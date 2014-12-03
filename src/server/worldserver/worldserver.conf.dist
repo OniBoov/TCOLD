@@ -3336,18 +3336,22 @@ irc.kickmsg = "Do Not Kick Me Again, Severe Actions Will Be Taken!"
 # wow.chan_#
 # IRC and WOW channels to link. Leave # out of IRC channel. Both channels _ARE_ case sensitive
 # NOTE: you can have more than 1 IRC channel linked to wow channels, as in example:
-# Example: irc.chan_1 = "Trinity"
-# irc.chan_2 = "trinity2"
+# Example:
+# irc.chan_1 = "Trinity"
 # wow.chan_1 = "world"
+# irc.chan_2 = "Trinity2"
 # wow.chan_2 = "LookingForGroup"
-# irc.pass_#
 # Passwords for said IRC channels (IRC server side)
 # Example:
 # irc.pass_1 = "password" password for irc channel #1
 # irc.pass_2 = "password2" password for irc channel #2
+# If we split alliance/horde chat in separate irc channels;this will append -alliance or -horde to irc channel name
+# Example:
+# split.chan_1 = 1
 irc.chan_1 = "ircchan"
 wow.chan_1 = "world"
 irc.pass_1 = "pass"
+split.chan_1 = 0
 
 ##################################################
 # irc.staff_link

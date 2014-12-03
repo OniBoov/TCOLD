@@ -23,25 +23,16 @@
 #include "ObjectMgr.h"
 #include "MapManager.h"
 
-/*#ifdef WIN32
-    #define Delay(x) Sleep(x)
-#else
-    #define Delay(x) sleep(x / 1000)
-#endif*/
 // IRCClient Constructor
 IRCClient::IRCClient():
-	thread(nullptr), Running(false)
-{
-//    for (int i = 0;i < 5;i++)
-//        sIRC->Script_Lock[i] = false;
-}
+    thread(nullptr) {}
+
 // IRCClient Destructor
 IRCClient::~IRCClient()
 {
-	TC_LOG_ERROR("misc", "****** TriniChat Shutting Down ********");
-	// delete if not running
-    if(sIRC->Running)
-        Disconnect();
+    TC_LOG_ERROR("misc", "****** TriniChat Shutting Down ********");
+    // delete if not running
+    Disconnect();
     delete thread;
 }
 
@@ -54,12 +45,9 @@ void TrinityChatThread()
 // ZThread Entry This function is called when the thread is created in Master.cpp (trinitycore)
 bool IRCClient::run()
 {
-//    iLog.WriteLog(" %s : ****** TrinityCore With TriniChat Has Been Started ******", iLog.GetLogDateTimeStr().c_str());
-
     // before we begin we wait a few
-    // mangos is still starting up.
-    //std::this_thread::sleep_for(std::chrono::milliseconds(500));
-    boost::this_thread::sleep(boost::posix_time::milliseconds(1500));
+    // core is still starting up.
+    std::this_thread::sleep_for(std::chrono::milliseconds(500));
     std::stringstream ss(sIRC->_bot_names);
     string temp = "";
     uint8 counter = 0;
@@ -78,7 +66,7 @@ bool IRCClient::run()
     }
     // check for hanging name
     sIRC->_ignore_bots[counter] = temp;
-	
+
     TC_LOG_INFO("server.loading", ">> TrinityChat Ignore Bots set.");
     TC_LOG_ERROR("misc", "\n%s\n%s\n%s\n%s",
         "***************************************",
@@ -111,11 +99,11 @@ bool IRCClient::run()
                     sIRC->Running = true;
                     // While we are connected to the irc server keep listening for data on the socket
                     while (sIRC->Connected && !World::IsStopped())
-					{
-						sIRC->SockRecv();
-						if(World::IsStopped())
-							Disconnect();
-					}
+                    {
+                        sIRC->SockRecv();
+                        if(World::IsStopped())
+                            Disconnect();
+                    }
                 }
                 TC_LOG_ERROR("misc", "*** TriniChat: Connection To IRC Server Lost! ***");
             }
@@ -129,7 +117,7 @@ bool IRCClient::run()
             // If we need to reattempt a connection wait WAIT_CONNECT_TIME milli seconds before we try again
             if (sIRC->Active)
             {
-                boost::this_thread::sleep(boost::posix_time::milliseconds(_wct));
+                std::this_thread::sleep_for(std::chrono::milliseconds(sIRC->_wct));
             }
         }
         else
@@ -139,8 +127,7 @@ bool IRCClient::run()
             TC_LOG_ERROR("misc", "** TriniChat: Could not initialize socket");
         }
     }
-    //while (!World::IsStopped()){};
-	return false;
+    return false;
 }
 
 std::string IRCClient::GetChatLine(int nItem)
