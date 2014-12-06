@@ -1559,7 +1559,7 @@ public:
         SpellCastResult CheckIfCorpseNear()
         {
             Unit* caster = GetCaster();
-            float max_range = GetSpellInfo()->GetMaxRange(false);
+            float max_range = GetSpellInfo()->Effects[0].CalcRadius();
             WorldObject* result = NULL;
             // search for nearby enemy corpse in range
             Trinity::AnyDeadUnitSpellTargetInRangeCheck check(caster, max_range, GetSpellInfo(), TARGET_CHECK_ENEMY);
