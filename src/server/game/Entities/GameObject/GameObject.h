@@ -845,6 +845,7 @@ class GameObject : public WorldObject, public GridObject<GameObject>, public Map
         LootState   m_lootState;
         ObjectGuid  m_lootStateUnitGUID;                    // GUID of the unit passed with SetLootState(LootState, Unit*)
         bool        m_spawnedByDefault;
+        uint32      m_armTime;                              // delay time store for traps arm time
         time_t      m_cooldownTime;                         // used as internal reaction delay time store (not state change reaction).
                                                             // For traps this: spell casting cooldown, for doors/buttons: reset time.
         std::list<uint32> m_SkillupList;

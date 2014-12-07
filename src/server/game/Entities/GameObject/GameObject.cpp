@@ -50,6 +50,7 @@ GameObject::GameObject() : WorldObject(false), MapObject(),
     m_spawnedByDefault = true;
     m_usetimes = 0;
     m_spellId = 0;
+    m_armTime = 0;
     m_cooldownTime = 0;
     m_goInfo = NULL;
     m_goData = NULL;
@@ -301,9 +302,9 @@ void GameObject::Update(uint32 diff)
                     else if (Unit* owner = GetOwner())
                     {
                         if (owner->IsInCombat())
-                            m_cooldownTime = time(NULL) + goInfo->trap.startDelay;
+                            m_armTime = getMSTime() + (goInfo->trap.startDelay * IN_MILLISECONDS) - (diff * 2); // remove diff * 2 for the two update cycles
                         else
-                            m_cooldownTime = time(NULL) + 1; // Workaround for traps being instantly activated when out of combat. SHOULD add 1 sec delay. Not tested and not sure if correct.
+                            m_armTime = getMSTime() + (1 * IN_MILLISECONDS) - (diff * 2); // Workaround for traps being instantly activated when out of combat. SHOULD add 1 sec delay. Not tested and not sure if correct.
                     }
 
                     SetLootState(GO_READY);
@@ -448,7 +449,7 @@ void GameObject::Update(uint32 diff)
                 GameObjectTemplate const* goInfo = GetGOInfo();
                 if (goInfo->type == GAMEOBJECT_TYPE_TRAP)
                 {
-                    if (m_cooldownTime >= time(NULL))
+                    if (m_cooldownTime >= time(NULL) || (m_cooldownTime == 0 && m_armTime >= getMSTime()))
                         break;
 
                     // Type 2 (bomb) does not need to be triggered by a unit and despawns after casting its spell.
@@ -560,6 +561,7 @@ void GameObject::Update(uint32 diff)
 
                         // Template value or 4 seconds
                         m_cooldownTime = time(NULL) + (goInfo->trap.cooldown ? goInfo->trap.cooldown : uint32(4));
+                        m_armTime = 0;
 
                         if (goInfo->trap.type == 1)
                             SetLootState(GO_JUST_DEACTIVATED);
