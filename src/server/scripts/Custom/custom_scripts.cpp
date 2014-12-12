@@ -1536,7 +1536,10 @@ class TauntFlagFilter
 public:
     bool operator()(WorldObject* target) const
     {
-        return target->ToPlayer()->IsAlive();
+        if (target->GetTypeId() == TYPEID_PLAYER)
+            return target->ToPlayer()->IsAlive();
+        else
+            return true;
     }
 };
 
