@@ -1605,6 +1605,52 @@ public:
     }
 };
 
+enum LandmineKnockbackAchievement
+{
+    SPELL_LANDMINE_KNOCKBACK_ACHIEMENT = 57064,
+};
+
+class spell_gen_landmine_knockback : public SpellScriptLoader
+{
+public:
+    spell_gen_landmine_knockback() : SpellScriptLoader("spell_gen_landmine_knockback") { }
+
+    class spell_gen_landmine_knockback_SpellScript : public SpellScript
+    {
+        PrepareSpellScript(spell_gen_landmine_knockback_SpellScript);
+
+        bool Validate(SpellInfo const* /*spell*/)
+        {
+            if (!sSpellMgr->GetSpellInfo(SPELL_LANDMINE_KNOCKBACK_ACHIEMENT))
+                return false;
+            return true;
+        }
+
+        void HandleScript(SpellEffIndex /*effIndex*/)
+        {
+            if (Player* target = GetHitPlayer())
+            {
+                Aura const* aura = GetHitAura();
+                if (!aura || aura->GetStackAmount() != 10)
+                    return;
+                // spell 57064 Landmine Knockback Achievement seems to not trigger the achieve..so using hack
+                AchievementEntry const* achiev = sAchievementStore.LookupEntry(1428);
+                target->CompletedAchievement(achiev);
+            }
+        }
+
+        void Register() override
+        {
+            OnEffectHitTarget += SpellEffectFn(spell_gen_landmine_knockback_SpellScript::HandleScript, EFFECT_1, SPELL_EFFECT_APPLY_AURA);
+        }
+    };
+
+    SpellScript* GetSpellScript() const override
+    {
+        return new spell_gen_landmine_knockback_SpellScript();
+    }
+};
+
 void AddSC_custom_scripts()
 {
     new TW_npc_argent_squire();
@@ -1629,4 +1675,5 @@ void AddSC_custom_scripts()
     new TW_spell_icc_valk_charge();
     new TW_npc_gen_movable_cannon_hack();
     new TW_spell_taunt_flag();
+    new spell_gen_landmine_knockback();
 }
