@@ -115,6 +115,7 @@ class instance_naxxramas : public InstanceMapScript
                 minHorsemenDiedTime     = 0;
                 maxHorsemenDiedTime     = 0;
                 AbominationCount        = 0;
+                CurrentWingTaunt        = SAY_KELTHUZAD_FIRST_WING_TAUNT;
 
                 playerDied              = 0;
             }
@@ -155,6 +156,9 @@ class instance_naxxramas : public InstanceMapScript
                         break;
                     case NPC_KEL_THUZAD:
                         KelthuzadGUID = creature->GetGUID();
+                        break;
+                    case NPC_LICH_KING:
+                        LichKingGUID = creature->GetGUID();
                         break;
                     default:
                         break;
@@ -201,6 +205,9 @@ class instance_naxxramas : public InstanceMapScript
                     case GO_KELTHUZAD_TRIGGER:
                         KelthuzadTriggerGUID = go->GetGUID();
                         break;
+                    case GO_ROOM_KELTHUZAD:
+                        KelthuzadDoorGUID = go->GetGUID();
+                        break;
                     default:
                         break;
                 }
@@ -242,6 +249,15 @@ class instance_naxxramas : public InstanceMapScript
                     playerDied = 1;
                     SaveToDB();
                 }
+
+                if (Creature* creature = unit->ToCreature())
+                    if (creature->GetEntry() == NPC_BIGGLESWORTH)
+                    {
+                        // Loads Kel'Thuzad's grid. We need this as he must be active in order for his texts to work.
+                        instance->LoadGrid(3749.67f, -5114.06f);
+                        if (Creature* kelthuzad = instance->GetCreature(KelthuzadGUID))
+                            kelthuzad->AI()->Talk(SAY_KELTHUZAD_CAT_DIED);
+                    }
             }
 
             void SetData(uint32 id, uint32 value) override
@@ -327,6 +343,8 @@ class instance_naxxramas : public InstanceMapScript
                         return PortalsGUID[3];
                     case DATA_KELTHUZAD_TRIGGER:
                         return KelthuzadTriggerGUID;
+                    case DATA_LICH_KING:
+                        return LichKingGUID;
                 }
 
                 return ObjectGuid::Empty;
@@ -339,17 +357,30 @@ class instance_naxxramas : public InstanceMapScript
 
                 switch (id)
                 {
+                    case BOSS_MAEXXNA:
+                    case BOSS_LOATHEB:
+                    case BOSS_THADDIUS:
+                        if (state == DONE)
+                            events.ScheduleEvent(EVENT_KELTHUZAD_WING_TAUNT, 6000);
+                        break;
                     case BOSS_GOTHIK:
                         if (state == DONE)
                             events.ScheduleEvent(EVENT_DIALOGUE_GOTHIK_KORTHAZZ, 10000);
                         break;
                     case BOSS_HORSEMEN:
                         if (state == DONE)
+                        {
                             if (GameObject* horsemenChest = instance->GetGameObject(HorsemenChestGUID))
                             {
                                 horsemenChest->SetRespawnTime(horsemenChest->GetRespawnDelay());
                                 horsemenChest->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
                             }
+                            events.ScheduleEvent(EVENT_KELTHUZAD_WING_TAUNT, 6000);
+                        }
+                        break;
+                    case BOSS_SAPPHIRON:
+                        if (state == DONE)
+                            events.ScheduleEvent(EVENT_DIALOGUE_SAPPHIRON_KELTHUZAD, 6000);
                         break;
                     default:
                         break;
@@ -404,6 +435,44 @@ class instance_naxxramas : public InstanceMapScript
                         case EVENT_DIALOGUE_GOTHIK_RIVENDARE2:
                             if (Creature* rivendare = instance->GetCreature(BaronGUID))
                                 rivendare->AI()->Talk(SAY_DIALOGUE_GOTHIK_HORSEMAN2);
+                            break;
+                        case EVENT_KELTHUZAD_WING_TAUNT:
+                            // Loads Kel'Thuzad's grid. We need this as he must be active in order for his texts to work.
+                            instance->LoadGrid(3749.67f, -5114.06f);
+                            if (Creature* kelthuzad = instance->GetCreature(KelthuzadGUID))
+                                kelthuzad->AI()->Talk(CurrentWingTaunt);
+                            ++CurrentWingTaunt;
+                            break;
+                        case EVENT_DIALOGUE_SAPPHIRON_KELTHUZAD:
+                            if (Creature* kelthuzad = instance->GetCreature(KelthuzadGUID))
+                                kelthuzad->AI()->Talk(SAY_DIALOGUE_SAPPHIRON_KELTHUZAD);
+                            HandleGameObject(KelthuzadDoorGUID, false);
+                            events.ScheduleEvent(EVENT_DIALOGUE_SAPPHIRON_LICHKING, 6000);
+                            break;
+                        case EVENT_DIALOGUE_SAPPHIRON_LICHKING:
+                            if (Creature* lichKing = instance->GetCreature(LichKingGUID))
+                                lichKing->AI()->Talk(SAY_DIALOGUE_SAPPHIRON_LICH_KING);
+                            events.ScheduleEvent(EVENT_DIALOGUE_SAPPHIRON_KELTHUZAD2, 16000);
+                            break;
+                        case EVENT_DIALOGUE_SAPPHIRON_KELTHUZAD2:
+                            if (Creature* kelthuzad = instance->GetCreature(KelthuzadGUID))
+                                kelthuzad->AI()->Talk(SAY_DIALOGUE_SAPPHIRON_KELTHUZAD2);
+                            events.ScheduleEvent(EVENT_DIALOGUE_SAPPHIRON_LICHKING2, 9000);
+                            break;
+                        case EVENT_DIALOGUE_SAPPHIRON_LICHKING2:
+                            if (Creature* lichKing = instance->GetCreature(LichKingGUID))
+                                lichKing->AI()->Talk(SAY_DIALOGUE_SAPPHIRON_LICH_KING2);
+                            events.ScheduleEvent(EVENT_DIALOGUE_SAPPHIRON_KELTHUZAD3, 12000);
+                            break;
+                        case EVENT_DIALOGUE_SAPPHIRON_KELTHUZAD3:
+                            if (Creature* kelthuzad = instance->GetCreature(KelthuzadGUID))
+                                kelthuzad->AI()->Talk(SAY_DIALOGUE_SAPPHIRON_KELTHUZAD3);
+                            events.ScheduleEvent(EVENT_DIALOGUE_SAPPHIRON_KELTHUZAD4, 6000);
+                            break;
+                        case EVENT_DIALOGUE_SAPPHIRON_KELTHUZAD4:
+                            if (Creature* kelthuzad = instance->GetCreature(KelthuzadGUID))
+                                kelthuzad->AI()->Talk(SAY_DIALOGUE_SAPPHIRON_KELTHUZAD4);
+                            HandleGameObject(KelthuzadDoorGUID, true);
                             break;
                         default:
                             break;
@@ -512,7 +581,10 @@ class instance_naxxramas : public InstanceMapScript
             ObjectGuid KelthuzadGUID;
             ObjectGuid KelthuzadTriggerGUID;
             ObjectGuid PortalsGUID[4];
+            ObjectGuid KelthuzadDoorGUID;
+            ObjectGuid LichKingGUID;
             uint8 AbominationCount;
+            uint8 CurrentWingTaunt;
 
             /* The Immortal / The Undying */
             uint32 playerDied;
