@@ -699,6 +699,8 @@ enum RBACPermissions
     RBAC_PERM_COMMAND_QUESTCOMPLETER_STATUS                  = 1003,
     RBAC_PERM_COMMAND_QUESTCOMPLETER_ADD                     = 1004,
     RBAC_PERM_COMMAND_QUESTCOMPLETER_DEL                     = 1005,
+    RBAC_PERM_COMMAND_QUEUE                                  = 1006,
+    RBAC_PERM_COMMAND_RBG_QUEUE_LOOKUP                       = 1007,
     RBAC_PERM_MAX
 };
 

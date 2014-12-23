@@ -29,6 +29,7 @@ EndScriptData */
 #include "MapManager.h"
 #include "Group.h"
 #include "ScriptMgr.h"
+#include "BattlegroundMgr.h"
 #include "AccountMgr.h"
 
 class custom_commandscript : public CommandScript
@@ -45,9 +46,17 @@ public:
             { "",                 rbac::RBAC_PERM_COMMAND_QUESTCOMPLETER_STATUS,  true, &HandleQuestCompleterStatusCommand,  "", NULL },
             { NULL,               0,                                              false, NULL,                               "", NULL }
         };
+
+        static ChatCommand bgqueueCommandTable[] =
+        {
+            { "rbglookup", rbac::RBAC_PERM_COMMAND_RBG_QUEUE_LOOKUP,    true,    &HandleBGQueueLookupCommand, "", NULL },
+            { NULL,        0,                                 false,    NULL,                                 "", NULL }
+        };
+
         static ChatCommand commandTable[] =
         {
             { "qc",              rbac::RBAC_PERM_COMMAND_QUESTCOMPLETER,          true,  NULL,                               "", questcompleterCommandTable },
+            { "queue",           rbac::RBAC_PERM_COMMAND_QUEST_REMOVE,            true,  NULL,                               "", bgqueueCommandTable },
             { NULL,              0,                                               false, NULL,                               "", NULL }
         };
         return commandTable;
@@ -290,6 +299,31 @@ public:
         }
         return true;
     }
+
+    static bool HandleBGQueueLookupCommand(ChatHandler* handler, char const* args)
+    {
+        BattlegroundQueueTypeId bgQueueTypeIdRandom = BattlegroundMgr::BGQueueTypeId(BATTLEGROUND_RB, 0);
+        BattlegroundQueue& bgQueue = sBattlegroundMgr->GetBattlegroundQueue(bgQueueTypeIdRandom);
+        std::string playerInfo;
+
+        if (bgQueue.m_QueuedPlayers.empty())
+        {
+            handler->SendSysMessage("The queue is empty.");
+            return true;
+        }
+
+        for (auto itr : bgQueue.m_QueuedPlayers)
+        {
+            if (Player* player = ObjectAccessor::FindPlayer(itr.first))
+            {
+                std::string status = (player->isAFK() ? "<Away>" : "");
+                playerInfo = "Player: " + status + player->GetName() + " IP: " + player->GetSession()->GetRemoteAddress() + " Faction: " + (player->GetTeamId() == TEAM_HORDE ? "Horde." : "Alliance.");
+                handler->SendSysMessage(playerInfo.c_str());
+            }
+        }
+        return true;
+    }
+
 };
 
 void AddSC_custom_commandscript()
