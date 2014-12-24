@@ -317,7 +317,7 @@ public:
             if (Player* player = ObjectAccessor::FindPlayer(itr.first))
             {
                 std::string status = (player->isAFK() ? "<Away>" : "");
-                playerInfo = "Player: " + status + player->GetName() + " IP: " + player->GetSession()->GetRemoteAddress() + " Faction: " + (player->GetTeamId() == TEAM_HORDE ? "Horde." : "Alliance.");
+                playerInfo = "Player: " + status + player->GetName() + " IP: " + player->GetSession()->GetRemoteAddress() + " Faction: " + (player->GetTeamId() == TEAM_HORDE ? "Horde" : "Alliance") + (player->GetMap()->IsBattleground() ? "[In Battleground]" : "");
                 handler->SendSysMessage(playerInfo.c_str());
             }
         }
