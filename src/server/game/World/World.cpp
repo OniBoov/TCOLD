@@ -1121,6 +1121,8 @@ void World::LoadConfigSettings(bool reload)
     m_int_configs[CONFIG_CHARDELETE_HEROIC_MIN_LEVEL] = sConfigMgr->GetIntDefault("CharDelete.Heroic.MinLevel", 0);
     m_int_configs[CONFIG_CHARDELETE_KEEP_DAYS] = sConfigMgr->GetIntDefault("CharDelete.KeepDays", 30);
 
+    m_bool_configs[CONFIG_BATTLEGOUND_QUEUE_PLAYER_ANNOUNCE] = sConfigMgr->GetBoolDefault("Battleground.PlayerQueueAnnounce", false);
+
     ///- Read the "Data" directory from the config file
     std::string dataPath = sConfigMgr->GetStringDefault("DataDir", "./");
     if (dataPath.empty() || (dataPath.at(dataPath.length()-1) != '/' && dataPath.at(dataPath.length()-1) != '\\'))
