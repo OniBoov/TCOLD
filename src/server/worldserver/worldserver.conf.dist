@@ -2170,6 +2170,14 @@ Battleground.RewardLoserHonorFirst  = 5
 Battleground.RewardLoserHonorLast   = 5
 
 #
+#    Battleground.PlayerQueueAnnounce
+#       Description: Announce to players when the queue is ready for a battleground to start.
+#       Default: 0 - (Disabled)
+#                1 - (Enabled)
+
+Battleground.PlayerQueueAnnounce = 0
+
+#
 ###################################################################################################
 
 ###################################################################################################
