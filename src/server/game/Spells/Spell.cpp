@@ -3193,14 +3193,37 @@ void Spell::cast(bool skipCheck)
 
     CallScriptAfterCastHandlers();
 
-    if (const std::vector<int32> *spell_triggered = sSpellMgr->GetSpellLinked(m_spellInfo->Id))
-    {
-        for (std::vector<int32>::const_iterator i = spell_triggered->begin(); i != spell_triggered->end(); ++i)
-            if (*i < 0)
-                m_caster->RemoveAurasDueToSpell(-(*i));
-            else
-                m_caster->CastSpell(m_targets.GetUnitTarget() ? m_targets.GetUnitTarget() : m_caster, *i, true);
-    }
+	if (const std::vector<int32> *spell_triggered = sSpellMgr->GetSpellLinked(m_spellInfo->Id))
+	{
+		for (std::vector<int32>::const_iterator i = spell_triggered->begin(); i != spell_triggered->end(); ++i)
+		{
+			if (*i < 0)
+				m_caster->RemoveAurasDueToSpell(-(*i));
+			else
+			{
+				Unit* caster = m_caster;
+				Unit* victim = m_caster;
+
+				if (m_targets.GetUnitTarget())
+				{
+					victim = m_targets.GetUnitTarget();
+					//Reflect the linked spell if the TargetInfo has reflected the main spell. (eg: reflect death grip)
+					for (std::list<TargetInfo>::iterator ihit = m_UniqueTargetInfo.begin(); ihit != m_UniqueTargetInfo.end(); ++ihit)
+					{
+						if (ihit->targetGUID == victim->GetGUID())
+						{
+							if (ihit->missCondition == SPELL_MISS_REFLECT && ihit->reflectResult == SPELL_MISS_NONE){
+								caster = victim;
+								victim = m_caster;
+							}
+							break;
+						}
+					}
+				}
+				caster->CastSpell(victim, *i, true);
+			}
+		}
+	}
 
     if (m_caster->GetTypeId() == TYPEID_PLAYER)
     {
