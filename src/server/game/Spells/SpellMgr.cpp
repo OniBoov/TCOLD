@@ -3779,6 +3779,7 @@ void SpellMgr::LoadSpellInfoCorrections()
                 break;
             // ENDOF ISLE OF CONQUEST SPELLS
             //
+            // TRUEWOW HACKS
             case 49224: // Magic Suppression
             case 49610:
             case 49611:
@@ -3789,7 +3790,8 @@ void SpellMgr::LoadSpellInfoCorrections()
                 break;
             case 62997: // Mimiron - Plasma Blast
             case 69508: // Rotface - Slime Spray
-            case 70498: // Vile Spirits
+            case 70498: // Lich King - Vile Spirits
+            case 73301: // Blood Prince Council - Shadow Prison Dummy
                 spellInfo->ChannelInterruptFlags = 0;
                 break;
             case 70541: // Infest (10 normal)
@@ -3801,8 +3803,6 @@ void SpellMgr::LoadSpellInfoCorrections()
             case 74384:  // Intimidating Roar - Ruby Sanctum
                 spellInfo->Effects[EFFECT_1].RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_40_YARDS);
                 break;
-
-            // TRUEWOW HACKS
             case 34490: // Silencing Shot
             case 19503: // Scatter Shot
             case 1543:  // Flare
