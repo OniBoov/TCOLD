@@ -230,7 +230,7 @@ GroupQueueInfo* BattlegroundQueue::AddGroup(Player* leader, Group* grp, Battlegr
                 {
                     if (bg->isBattleground() && q_min_level != 80)
                     {
-                        if (m_QueuedGroups[bracketId][BG_QUEUE_NORMAL_ALLIANCE].size() == MinPlayers && !hasBeenAnnounced[bracketId][BG_QUEUE_NORMAL_ALLIANCE])
+                        if (m_QueuedGroups[bracketId][BG_QUEUE_NORMAL_ALLIANCE].size() == MinPlayers && !hasBeenAnnounced[bracketId][BG_QUEUE_NORMAL_ALLIANCE] && m_QueuedGroups[bracketId][BG_QUEUE_NORMAL_HORDE].size() < MinPlayers)
                         {
                             sWorld->SendWorldText(LANG_BG_ANNOUNCE_TEAM_READY, q_min_level, q_max_level, "Alliance", bg->GetName().c_str());
                             hasBeenAnnounced[bracketId][BG_QUEUE_NORMAL_ALLIANCE] = true;
@@ -238,7 +238,7 @@ GroupQueueInfo* BattlegroundQueue::AddGroup(Player* leader, Group* grp, Battlegr
                         else if (m_QueuedGroups[bracketId][BG_QUEUE_NORMAL_ALLIANCE].size() == 1) // set booleans when the first player queues
                             hasBeenAnnounced[bracketId][BG_QUEUE_NORMAL_ALLIANCE] = false;
 
-                        if (m_QueuedGroups[bracketId][BG_QUEUE_NORMAL_HORDE].size() == MinPlayers && !hasBeenAnnounced[bracketId][BG_QUEUE_NORMAL_HORDE])
+                        if (m_QueuedGroups[bracketId][BG_QUEUE_NORMAL_HORDE].size() == MinPlayers && !hasBeenAnnounced[bracketId][BG_QUEUE_NORMAL_HORDE] && m_QueuedGroups[bracketId][BG_QUEUE_NORMAL_ALLIANCE].size() < MinPlayers)
                         {
                             sWorld->SendWorldText(LANG_BG_ANNOUNCE_TEAM_READY, q_min_level, q_max_level, "Horde", bg->GetName().c_str());
                             hasBeenAnnounced[bracketId][BG_QUEUE_NORMAL_HORDE] = true;
