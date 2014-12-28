@@ -2442,10 +2442,7 @@ class ExactDistanceCheck
 
         bool operator()(WorldObject* unit)
         {
-            if (unit->GetTypeId() == TYPEID_PLAYER)
-                return _source->GetExactDist2d(unit) > _dist && !unit->ToPlayer()->GetVehicleBase();
-            else
-                return _source->GetExactDist2d(unit) > _dist;
+            return _source->GetExactDist2d(unit) > _dist && !unit->ToUnit()->GetVehicleBase();
         }
 
     private:
