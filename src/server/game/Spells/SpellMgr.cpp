@@ -3801,6 +3801,14 @@ void SpellMgr::LoadSpellInfoCorrections()
             case 74384:  // Intimidating Roar - Ruby Sanctum
                 spellInfo->Effects[EFFECT_1].RadiusEntry = sSpellRadiusStore.LookupEntry(EFFECT_RADIUS_40_YARDS);
                 break;
+
+            // TRUEWOW HACKS
+            case 34490: // Silencing Shot
+            case 19503: // Scatter Shot
+            case 1543:  // Flare
+                spellInfo->Speed = 0;
+                break;
+            // END OF TRUEWOW HACKS
             default:
                 break;
         }
