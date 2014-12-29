@@ -24149,7 +24149,7 @@ bool Player::IsAtGroupRewardDistance(WorldObject const* pRewardSource) const
         return false;
 
     // !POTENTIAL HACK - Credit distance in dungeons is unlimited, not entirely sure about this but from most experiences in retail it seems to be true.
-    if (player->GetMapId() == pRewardSource->GetMapId() && player->GetMap()->IsDungeon())
+    if (player->GetMapId() == pRewardSource->GetMapId() && player->GetMap()->IsDungeon() && player->GetInstanceId() == pRewardSource->GetInstanceId())
         return true;
 
     return pRewardSource->GetDistance(player) <= sWorld->getFloatConfig(CONFIG_GROUP_XP_DISTANCE);
