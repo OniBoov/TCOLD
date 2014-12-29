@@ -3808,6 +3808,9 @@ void SpellMgr::LoadSpellInfoCorrections()
             case 1543:  // Flare
                 spellInfo->Speed = 0;
                 break;
+            case 49575: // Death Grip
+                spellInfo->Effects[EFFECT_0].MiscValue = 20;
+                break;
             // END OF TRUEWOW HACKS
             default:
                 break;
