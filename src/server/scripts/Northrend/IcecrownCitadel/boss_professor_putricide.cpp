@@ -238,7 +238,7 @@ class boss_professor_putricide : public CreatureScript
                 _abominationGUID.Clear();
                 SetPhase(PHASE_COMBAT_1);
                 _experimentState = EXPERIMENT_STATE_OOZE;
-                me->SetReactState(REACT_DEFENSIVE);
+                me->SetReactState(REACT_AGGRESSIVE);
                 me->SetWalk(false);
                 if (me->GetMotionMaster()->GetCurrentMovementGeneratorType() == POINT_MOTION_TYPE)
                     me->GetMotionMaster()->MovementExpired();
