@@ -860,7 +860,6 @@ class instance_ulduar : public InstanceMapScript
                         ColossusData = data;
                         if (data == 2)
                         {
-                            instance->SummonCreature(NPC_BRONZEBEARD_RADIO, BrannRadioSummonPos);                          
                             if (Creature* radio = instance->SummonCreature(NPC_BRONZEBEARD_RADIO, BrannRadioSummonPos))
                             {
                                 RadioGUID = radio->GetGUID();
@@ -1260,6 +1259,8 @@ class instance_ulduar : public InstanceMapScript
                                 Leviathan->AI()->DoAction(ACTION_MOVE_TO_CENTER_POSITION);
                             if (GameObject* gameObject = instance->GetGameObject(LeviathanGateGUID))
                                 gameObject->SetGoState(GO_STATE_ACTIVE_ALTERNATIVE);
+                            break;
+                        default:
                             break;
                     }
                 }
