@@ -1,0 +1,36 @@
+<Configuration>
+	<ConnectionURLs>
+		<ConnectionURL>
+			<Database>WORLD</Database>
+			<URL><![CDATA[jdbc:mysql://localhost/world?user=root&password=ascent]]></URL>
+		</ConnectionURL>
+		<ConnectionURL>
+			<Database>AUTH</Database>
+			<URL><![CDATA[jdbc:mysql://localhost/auth?user=root&password=ascent]]></URL>
+		</ConnectionURL>
+		<ConnectionURL>
+			<Database>CHARACTER</Database>
+			<URL><![CDATA[jdbc:mysql://localhost/characters?user=root&password=ascent]]></URL>
+		</ConnectionURL>
+	</ConnectionURLs>
+	<ExclusionRules>
+		<ExclusionRule name="excludeOldScripts">
+			<Type>FILENAME_TS</Type>
+			<Params>
+				<Param name="pattern" value="[\d]{4}_[\d]{2}_[\d]{2}" />
+				<Param name="format" value="yyyy_MM_dd" />
+				<Param name="threshold" value="2014-12-27 00:00:00" />
+			</Params>
+		</ExclusionRule>
+	</ExclusionRules>
+	<JobDefinitions>
+		<JobDefinition name="TrinityCoreUpdate">
+			<Directory>..\..\sql\updates</Directory>
+			<Extension>sql</Extension>
+			<Recursive>true</Recursive>
+			<ExclusionRules>
+				<ExclusionRule name="excludeOldScripts"/>
+			</ExclusionRules>
+		</JobDefinition>
+	</JobDefinitions>
+</Configuration>
