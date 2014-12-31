@@ -1149,6 +1149,11 @@ class instance_icecrown_citadel : public InstanceMapScript
                         break;
                     case DATA_IS_BUFF_ENABLED:
                         IsBuffEnabled = data;
+                        if (data == 0)
+                        {
+                            DoRemoveAurasDueToSpellOnPlayers(SPELL_HELLSCREAM_WARSONG);
+                            DoRemoveAurasDueToSpellOnPlayers(SPELL_STRENGTH_OF_WRYNN);
+                        }
                         break;
                     default:
                         break;
