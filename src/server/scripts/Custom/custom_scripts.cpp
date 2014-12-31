@@ -1695,7 +1695,16 @@ class TW_npc_putricide_insect_trap : public CreatureScript
 
         void EnterCombat(Unit* /* who */) override
         {
-            SummonInsects(me);
+            if (_instance->GetData(DATA_INSECT_SWARM_EVENT) != DONE)
+                SummonInsects(me);
+        }
+
+        bool CanAIAttack(Unit const* /*who*/) const override
+        {
+            if (_instance->GetData(DATA_INSECT_SWARM_EVENT) == DONE)
+                return false;
+
+            return true;
         }
 
         void UpdateAI(uint32 diff) override
