@@ -38,7 +38,11 @@ enum EventIds
     EVENT_ENEMY_GUNSHIP_DESPAWN     = 22861,
     EVENT_QUAKE                     = 23437,
     EVENT_SECOND_REMORSELESS_WINTER = 23507,
-    EVENT_TELEPORT_TO_FROSTMOURNE   = 23617
+    EVENT_TELEPORT_TO_FROSTMOURNE   = 23617,
+
+    // TrueWoW
+    EVENT_RELEASE_OOZE_VALVE        = 23426,
+    EVENT_RELEASE_GAS_VALVE         = 23438
 };
 
 enum TimedEvents
@@ -131,6 +135,8 @@ class instance_icecrown_citadel : public InstanceMapScript
                 // TW
                 CrimsonHallKillCount = 0;
                 CrimsonHallDoorGUID.Clear();
+                OozeValveUsed = false;
+                GasValveUsed = false;
             }
 
             // A function to help reduce the number of lines for teleporter management.
@@ -667,6 +673,12 @@ class instance_icecrown_citadel : public InstanceMapScript
                         if (CrimsonHallKillCount == 4)
                             go->SetGoState(GO_STATE_ACTIVE);
                         break;
+                    case GO_OOZE_RELEASE_VALVE:
+                        OozeValveGUID = go->GetGUID();
+                        break;
+                    case GO_GAS_RELEASE_VALVE:
+                        GasValveGUID = go->GetGUID();
+                        break;
                     default:
                         break;
                 }
@@ -891,35 +903,13 @@ class instance_icecrown_citadel : public InstanceMapScript
                         break;
                     case DATA_FESTERGUT:
                         if (state == DONE)
-                        {
-                            if (GetBossState(DATA_ROTFACE) == DONE)
-                            {
-                                HandleGameObject(PutricideCollisionGUID, true);
-                                if (GameObject* go = instance->GetGameObject(PutricideGateGUIDs[0]))
-                                    go->SetGoState(GO_STATE_ACTIVE_ALTERNATIVE);
-                                if (GameObject* go = instance->GetGameObject(PutricideGateGUIDs[1]))
-                                    go->SetGoState(GO_STATE_ACTIVE_ALTERNATIVE);
-                            }
-                            else
-                                HandleGameObject(PutricideGateGUIDs[0], false);
-                            HandleGameObject(PutricidePipeGUIDs[0], true);
-                        }
+                            if (GameObject* valve = instance->GetGameObject(GasValveGUID))
+                                valve->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
                         break;
                     case DATA_ROTFACE:
                         if (state == DONE)
-                        {
-                            if (GetBossState(DATA_FESTERGUT) == DONE)
-                            {
-                                HandleGameObject(PutricideCollisionGUID, true);
-                                if (GameObject* go = instance->GetGameObject(PutricideGateGUIDs[0]))
-                                    go->SetGoState(GO_STATE_ACTIVE_ALTERNATIVE);
-                                if (GameObject* go = instance->GetGameObject(PutricideGateGUIDs[1]))
-                                    go->SetGoState(GO_STATE_ACTIVE_ALTERNATIVE);
-                            }
-                            else
-                                HandleGameObject(PutricideGateGUIDs[1], false);
-                            HandleGameObject(PutricidePipeGUIDs[1], true);
-                        }
+                            if (GameObject* valve = instance->GetGameObject(OozeValveGUID))
+                                valve->RemoveFlag(GAMEOBJECT_FLAGS, GO_FLAG_NOT_SELECTABLE);
                         break;
                     case DATA_PROFESSOR_PUTRICIDE:
                         HandleGameObject(PlagueSigilGUID, state != DONE);
@@ -1454,6 +1444,34 @@ class instance_icecrown_citadel : public InstanceMapScript
                             }
                         }
                         break;
+                    case EVENT_RELEASE_GAS_VALVE:
+                        HandleGameObject(PutricidePipeGUIDs[0], true);
+                        GasValveUsed = true;
+                        if (OozeValveUsed)
+                        {
+                            HandleGameObject(PutricideCollisionGUID, true);
+                            if (GameObject* go = instance->GetGameObject(PutricideGateGUIDs[0]))
+                                go->SetGoState(GO_STATE_ACTIVE_ALTERNATIVE);
+                            if (GameObject* go = instance->GetGameObject(PutricideGateGUIDs[1]))
+                                go->SetGoState(GO_STATE_ACTIVE_ALTERNATIVE);
+                        }
+                        else
+                            HandleGameObject(PutricideGateGUIDs[0], false);
+                        break;
+                    case EVENT_RELEASE_OOZE_VALVE:
+                        HandleGameObject(PutricidePipeGUIDs[1], true);
+                        OozeValveUsed = true;
+                        if (GasValveUsed)
+                        {
+                            HandleGameObject(PutricideCollisionGUID, true);
+                            if (GameObject* go = instance->GetGameObject(PutricideGateGUIDs[0]))
+                                go->SetGoState(GO_STATE_ACTIVE_ALTERNATIVE);
+                            if (GameObject* go = instance->GetGameObject(PutricideGateGUIDs[1]))
+                                go->SetGoState(GO_STATE_ACTIVE_ALTERNATIVE);
+                        }
+                        else
+                            HandleGameObject(PutricideGateGUIDs[1], false);
+                        break;
                 }
             }
 
@@ -1525,6 +1543,10 @@ class instance_icecrown_citadel : public InstanceMapScript
             // TW
             uint32 CrimsonHallKillCount;
             ObjectGuid CrimsonHallDoorGUID;
+            ObjectGuid OozeValveGUID;
+            ObjectGuid GasValveGUID;
+            bool OozeValveUsed;
+            bool GasValveUsed;
         };
 
         InstanceScript* GetInstanceScript(InstanceMap* map) const override
