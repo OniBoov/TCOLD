@@ -55,7 +55,10 @@ enum SharedSpells
 
     // Shadowmourne questline
     SPELL_UNSATED_CRAVING               = 71168,
-    SPELL_SHADOWS_FATE                  = 71169
+    SPELL_SHADOWS_FATE                  = 71169,
+
+    SPELL_HELLSCREAM_WARSONG            = 73822,
+    SPELL_STRENGTH_OF_WRYNN             = 73828
 };
 
 enum TeleporterSpells
@@ -119,7 +122,8 @@ enum DataTypes
 
     // TW
     DATA_CRIMSON_HALL_DOOR          = 42,
-    DATA_INSECT_SWARM_EVENT         = 43
+    DATA_INSECT_SWARM_EVENT         = 43,
+    DATA_IS_BUFF_ENABLED            = 44
 };
 
 enum CreaturesIds

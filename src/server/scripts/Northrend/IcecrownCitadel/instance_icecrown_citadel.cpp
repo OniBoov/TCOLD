@@ -139,6 +139,7 @@ class instance_icecrown_citadel : public InstanceMapScript
                 OozeValveUsed = false;
                 GasValveUsed = false;
                 PutricideInsectSwarmEventState = NOT_STARTED;
+                IsBuffEnabled = true;
             }
 
             // A function to help reduce the number of lines for teleporter management.
@@ -175,6 +176,12 @@ class instance_icecrown_citadel : public InstanceMapScript
 
                 if (instance->IsHeroic() && HeroicAttempts)
                     player->SendUpdateWorldState(WORLDSTATE_ATTEMPTS_REMAINING, HeroicAttempts);
+
+                if (!IsBuffEnabled)
+                {
+                    player->RemoveAura(SPELL_HELLSCREAM_WARSONG);
+                    player->RemoveAura(SPELL_STRENGTH_OF_WRYNN);
+                }
             }
 
             void OnCreatureCreate(Creature* creature) override
@@ -767,6 +774,8 @@ class instance_icecrown_citadel : public InstanceMapScript
                         return HeroicAttempts;
                     case DATA_INSECT_SWARM_EVENT:
                         return PutricideInsectSwarmEventState;
+                    case DATA_IS_BUFF_ENABLED:
+                        return IsBuffEnabled;
                     default:
                         break;
                 }
@@ -1137,6 +1146,9 @@ class instance_icecrown_citadel : public InstanceMapScript
                                 go->SetGoState(GO_STATE_ACTIVE);
                             HandleGameObject(PutricideCollisionGUID, false);
                         }
+                        break;
+                    case DATA_IS_BUFF_ENABLED:
+                        IsBuffEnabled = data;
                         break;
                     default:
                         break;
@@ -1588,6 +1600,7 @@ class instance_icecrown_citadel : public InstanceMapScript
             bool IsOrbWhispererEligible;
 
             // TW
+            uint8 IsBuffEnabled;
             uint8 PutricideInsectSwarmEventState;
             uint32 CrimsonHallKillCount;
             uint32 InsectDeathCount;
