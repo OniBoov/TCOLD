@@ -118,7 +118,8 @@ enum DataTypes
     DATA_UPPERSPIRE_TELE_ACT        = 41,
 
     // TW
-    DATA_CRIMSON_HALL_DOOR          = 42
+    DATA_CRIMSON_HALL_DOOR          = 42,
+    DATA_INSECT_SWARM_EVENT         = 43
 };
 
 enum CreaturesIds
@@ -237,6 +238,7 @@ enum CreaturesIds
     NPC_TEAR_GAS_TARGET_STALKER                 = 38317,
     NPC_MUTATED_ABOMINATION_10                  = 37672,
     NPC_MUTATED_ABOMINATION_25                  = 38285,
+    NPC_FLESH_EATING_INSECT                     = 37782,
 
     // Blood Prince Council
     NPC_PRINCE_KELESETH                         = 37972,
@@ -326,7 +328,8 @@ enum CreaturesIds
     NPC_DARKFALLEN_NOBLE                        = 37663,
     NPC_DARKFALLEN_BLOODKNIGHT                  = 37595,
     NPC_DARKFALLEN_ARCHMAGE                     = 37664,
-    NPC_DARKFALLEN_ADVISOR                      = 37571
+    NPC_DARKFALLEN_ADVISOR                      = 37571,
+    NPC_PUTRICIDE_TRAP                          = 38879
 };
 
 enum GameObjectsIds
@@ -503,7 +506,11 @@ enum SharedActions
 
     // The Lich King
     ACTION_RESTORE_LIGHT        = -72262,
-    ACTION_FROSTMOURNE_INTRO    = -36823
+    ACTION_FROSTMOURNE_INTRO    = -36823,
+
+    // TrueWoW
+    ACTION_START_TRAP_EVENT     = 20,
+    ACTION_END_TRAP_EVENT       = 21
 };
 
 enum WeekliesICC

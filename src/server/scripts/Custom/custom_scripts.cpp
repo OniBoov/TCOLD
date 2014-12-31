@@ -1651,6 +1651,154 @@ public:
     }
 };
 
+enum PutricideTrapData
+{
+    SPELL_GIANT_INSECT_SWARM = 70475,
+    DATA_INSECT_SWARM_EVENT  = 43,
+    EVENT_SUMMON_INSECTS     = 1,
+    EVENT_FLESH_EATING_BITE  = 2,
+    NPC_FLESH_EATING_INSECT  = 37782,
+    ACTION_START_TRAP_EVENT  = 20,
+    ACTION_END_TRAP_EVENT    = 21,
+    SPELL_FLESH_EATING_BITE  = 72967
+};
+
+class TW_npc_putricide_insect_trap : public CreatureScript
+{
+    public:
+        TW_npc_putricide_insect_trap() : CreatureScript("TW_npc_putricide_insect_trap") { }
+
+    struct TW_npc_putricide_insect_trapAI : public ScriptedAI
+    {
+        TW_npc_putricide_insect_trapAI(Creature* creature) : ScriptedAI(creature), _summons(me)
+        { 
+            _instance = creature->GetInstanceScript();
+            creature->SetFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_NOT_SELECTABLE | UNIT_FLAG_NON_ATTACKABLE);
+            creature->SetDisplayId(11686);
+        }
+
+        void DoAction(int32 actionId) override
+        {
+            if (actionId == ACTION_START_TRAP_EVENT)
+            {
+                me->AI()->DoCastAOE(SPELL_GIANT_INSECT_SWARM);
+                _events.ScheduleEvent(EVENT_SUMMON_INSECTS, 2000);
+            }
+            else if (actionId == ACTION_END_TRAP_EVENT)
+            {
+                _summons.DespawnAll();
+                me->InterruptNonMeleeSpells(true);
+                EnterEvadeMode();
+                me->SetVisible(false);
+            }
+        }
+
+        void EnterCombat(Unit* /* who */) override
+        {
+            SummonInsects(me);
+        }
+
+        void UpdateAI(uint32 diff) override
+        {
+            if (_instance->GetData(DATA_INSECT_SWARM_EVENT) != IN_PROGRESS)
+                return;
+
+            _events.Update(diff);
+
+            while (uint32 eventId = _events.ExecuteEvent())
+            {
+                if (eventId == EVENT_SUMMON_INSECTS)
+                {
+                    if (Unit* victim = SelectTarget(SELECT_TARGET_RANDOM, 0, 25.0f, true))
+                        SummonInsects(victim);
+
+                    _events.ScheduleEvent(EVENT_SUMMON_INSECTS, 3000);
+                }
+            }
+        }
+
+        void JustSummoned(Creature* summon) override
+        {
+            _summons.Summon(summon);
+            summon->SetReactState(REACT_AGGRESSIVE);
+        }
+
+        void SummonedCreatureDies(Creature* summon, Unit* /*killer*/) override
+        {
+            _summons.Despawn(summon);
+        }
+
+        void SummonInsects(Unit* victim)
+        {
+            for (uint32 i = 0; i < 5; ++i)
+                if (Creature* insect = me->SummonCreature(NPC_FLESH_EATING_INSECT, victim->GetPositionX() + float(irand(-7, 7)), victim->GetPositionY() + float(irand(-7, 7)), victim->GetPositionZ(), 0, TEMPSUMMON_TIMED_OR_CORPSE_DESPAWN, 120000))
+                    if (victim != me)
+                        insect->AI()->AttackStart(victim);
+
+        }
+
+        private:
+            EventMap _events;
+            InstanceScript* _instance;
+            SummonList _summons;
+    };
+
+    CreatureAI *GetAI(Creature* creature) const override
+    {
+        return new TW_npc_putricide_insect_trapAI(creature);
+    }
+};
+
+class TW_npc_flesh_eating_insect : public CreatureScript
+{
+    public:
+         TW_npc_flesh_eating_insect() : CreatureScript("TW_npc_flesh_eating_insect") { }
+
+    struct TW_npc_flesh_eating_insectAI : public ScriptedAI
+    {
+        TW_npc_flesh_eating_insectAI(Creature* creature) : ScriptedAI(creature)  
+        { 
+            _instance = creature->GetInstanceScript();
+        }
+
+        void EnterCombat(Unit* /*who*/) override
+        {
+            _events.ScheduleEvent(EVENT_FLESH_EATING_BITE, 2000);
+        }
+
+        void DamageTaken(Unit* /*done_by*/, uint32&) override { }
+
+        void UpdateAI(uint32 diff) override
+        {
+            if (!UpdateVictim())
+                return;
+
+            if (_instance->GetData(DATA_INSECT_SWARM_EVENT) != IN_PROGRESS)
+                return;
+
+            while (uint32 eventId = _events.ExecuteEvent())
+            {
+                if (eventId == EVENT_FLESH_EATING_BITE)
+                {
+                    DoCast(me, SPELL_FLESH_EATING_BITE, true);
+                    _events.ScheduleEvent(EVENT_FLESH_EATING_BITE, 3000);
+                }
+            }
+
+            DoMeleeAttackIfReady();
+        }
+
+        private:
+            EventMap _events;
+            InstanceScript* _instance;
+    };
+
+    CreatureAI *GetAI(Creature* creature) const override
+    {
+        return new TW_npc_flesh_eating_insectAI(creature);
+    }
+};
+
 void AddSC_custom_scripts()
 {
     new TW_npc_argent_squire();
@@ -1676,4 +1824,6 @@ void AddSC_custom_scripts()
     new TW_npc_gen_movable_cannon_hack();
     new TW_spell_taunt_flag();
     new spell_gen_landmine_knockback();
+    new TW_npc_putricide_insect_trap();
+    new TW_npc_flesh_eating_insect();
 }
