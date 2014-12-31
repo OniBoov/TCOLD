@@ -1791,7 +1791,8 @@ class TW_npc_flesh_eating_insect : public CreatureScript
             {
                 if (eventId == EVENT_FLESH_EATING_BITE)
                 {
-                    DoCast(me, SPELL_FLESH_EATING_BITE, true);
+                    if (Unit* target = me->GetVictim())
+                        DoCast(target, SPELL_FLESH_EATING_BITE, true);
                     _events.ScheduleEvent(EVENT_FLESH_EATING_BITE, 3000);
                 }
             }
