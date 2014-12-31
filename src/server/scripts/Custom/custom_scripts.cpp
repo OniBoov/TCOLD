@@ -1785,6 +1785,8 @@ class TW_npc_flesh_eating_insect : public CreatureScript
             if (_instance->GetData(DATA_INSECT_SWARM_EVENT) != IN_PROGRESS)
                 return;
 
+            _events.Update(diff);
+
             while (uint32 eventId = _events.ExecuteEvent())
             {
                 if (eventId == EVENT_FLESH_EATING_BITE)
