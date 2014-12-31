@@ -2501,6 +2501,11 @@ SpellMissInfo Unit::MeleeSpellHitResult(Unit* victim, SpellInfo const* spellInfo
 /// @todo need use unit spell resistances in calculations
 SpellMissInfo Unit::MagicSpellHitResult(Unit* victim, SpellInfo const* spellInfo)
 {
+    // For totems get the spell hit result from the owner
+    if (GetTypeId() == TYPEID_UNIT && IsTotem())
+        if (Unit* owner = GetOwner())
+            return owner->MagicSpellHitResult(victim, spellInfo);
+
     // Can`t miss on dead target (on skinning for example)
     if ((!victim->IsAlive() && victim->GetTypeId() != TYPEID_PLAYER) || spellInfo->AttributesEx3 & SPELL_ATTR3_IGNORE_HIT_RESULT)
         return SPELL_MISS_NONE;
@@ -2540,7 +2545,7 @@ SpellMissInfo Unit::MagicSpellHitResult(Unit* victim, SpellInfo const* spellInfo
     int32 HitChance = modHitChance * 100;
     // Increase hit chance from attacker SPELL_AURA_MOD_SPELL_HIT_CHANCE and attacker ratings
     HitChance += int32(m_modSpellHitChance * 100.0f);
-
+    
     RoundToInterval(HitChance, 100, 10000);
 
     int32 tmp = 10000 - HitChance;
@@ -4957,7 +4962,7 @@ void Unit::SendSpellNonMeleeDamageLog(SpellNonMeleeDamage* log)
 {
     WorldPacket data(SMSG_SPELLNONMELEEDAMAGELOG, (16+4+4+4+1+4+4+1+1+4+4+1)); // we guess size
     data << log->target->GetPackGUID();
-    data << log->attacker->GetPackGUID();
+    data << log->attacker->GetUnitOrTotemOwner()->GetPackGUID();
     data << uint32(log->SpellID);
     data << uint32(log->damage);                            // damage amount
     int32 overkill = log->damage - log->target->GetHealth();
@@ -5048,7 +5053,7 @@ void Unit::SendSpellMiss(Unit* target, uint32 spellID, SpellMissInfo missInfo)
 {
     WorldPacket data(SMSG_SPELLLOGMISS, (4+8+1+4+8+1));
     data << uint32(spellID);
-    data << uint64(GetGUID());
+    data << uint64(GetUnitOrTotemOwner()->GetGUID());
     data << uint8(0);                                       // can be 0 or 1
     data << uint32(1);                                      // target count
     // for (i = 0; i < target count; ++i)
@@ -5061,7 +5066,7 @@ void Unit::SendSpellMiss(Unit* target, uint32 spellID, SpellMissInfo missInfo)
 void Unit::SendSpellDamageResist(Unit* target, uint32 spellId)
 {
     WorldPacket data(SMSG_PROCRESIST, 8+8+4+1);
-    data << uint64(GetGUID());
+    data << uint64(GetUnitOrTotemOwner()->GetGUID());
     data << uint64(target->GetGUID());
     data << uint32(spellId);
     data << uint8(0); // bool - log format: 0-default, 1-debug
@@ -5071,7 +5076,7 @@ void Unit::SendSpellDamageResist(Unit* target, uint32 spellId)
 void Unit::SendSpellDamageImmune(Unit* target, uint32 spellId)
 {
     WorldPacket data(SMSG_SPELLORDAMAGE_IMMUNE, 8+8+4+1);
-    data << uint64(GetGUID());
+    data << uint64(GetUnitOrTotemOwner()->GetGUID());
     data << uint64(target->GetGUID());
     data << uint32(spellId);
     data << uint8(0); // bool - log format: 0-default, 1-debug
@@ -10509,6 +10514,11 @@ bool Unit::IsSpellCrit(Unit* victim, SpellInfo const* spellProto, SpellSchoolMas
 
 float Unit::GetUnitSpellCriticalChance(Unit* victim, SpellInfo const* spellProto, SpellSchoolMask schoolMask, WeaponAttackType attackType) const
 {
+    // For totems get the spell critical chance from the owner
+    if (GetTypeId() == TYPEID_UNIT && IsTotem())
+        if (Unit* owner = GetOwner())
+            return owner->GetUnitSpellCriticalChance(victim, spellProto, schoolMask, attackType);
+
     //! Mobs can't crit with spells. Player Totems can
     //! Fire Elemental (from totem) can too - but this part is a hack and needs more research
     if (GetGUID().IsCreatureOrVehicle() && !(IsTotem() && GetOwnerGUID().IsPlayer()) && GetEntry() != 15438)
@@ -10711,6 +10721,11 @@ float Unit::GetUnitSpellCriticalChance(Unit* victim, SpellInfo const* spellProto
 
 uint32 Unit::SpellCriticalDamageBonus(SpellInfo const* spellProto, uint32 damage, Unit* victim)
 {
+    // For totems get the spell critical damage bonus from the owner
+    if (GetTypeId() == TYPEID_UNIT && IsTotem())
+        if (Unit* owner = GetOwner())
+            return owner->SpellCriticalDamageBonus(spellProto, damage, victim);
+
     // Calculate critical bonus
     int32 crit_bonus = damage;
     float crit_mod = 0.0f;
@@ -18065,4 +18080,11 @@ void Unit::Whisper(uint32 textId, Player* target, bool isBossWhisper /*= false*/
     WorldPacket data;
     ChatHandler::BuildChatPacket(data, isBossWhisper ? CHAT_MSG_RAID_BOSS_WHISPER : CHAT_MSG_MONSTER_WHISPER, LANG_UNIVERSAL, this, target, bct->GetText(locale, getGender()), 0, "", locale);
     target->SendDirectMessage(&data);
+}
+
+Unit* Unit::GetUnitOrTotemOwner(){
+    if (GetTypeId() == TYPEID_UNIT && ToCreature()->IsTotem())
+        if (Unit* owner = GetOwner())
+            return owner;
+    return this;
 }

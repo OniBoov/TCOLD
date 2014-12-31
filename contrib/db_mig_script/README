@@ -1,0 +1,32 @@
+This is a small tool to keep the database up to date with the repository scripts.
+
+Step to set it up :
+-------------------
+1. Run create_structure.sql on each of your databases.
+2. Edit conf.xml for your need.
+3. Execute run.bat or run.sh depending to the system.
+
+Important matters:
+------------------
+* The table db_mig_script will contain the process information with:
+- Job name : which process handled this script
+- Script name : path from the reading directory to the filename
+- Status : S=Success, F=Fail, R=Rollback
+- Reason : Exception message of the issue.
+
+* If one of the script being processed is in error it will rollback the whole process.
+The error script will be stored with status F and the reason of fail.
+The other scripts will be stored with status R and in the reason which script is the cause.
+
+* When the business is ran, it first check in the table if there is already a record with this script name in Success.
+If this is the case, the script won't be processed as it was already processed.
+
+* At the end of the process, the whole log is saved in log.txt
+
+Congiration.xml structure:
+--------------------------
+* ConnectionURLs : Obviously that's where you define the url to the databases (with user and password in the url)
+* ExclusionRules : Defines a set of exclusion rule that you can apply lower on jobs. 
+They are useful to ignore some file that you have already run manually.
+At the moment there is only one type of exclusion rule based on the timestamp extracted from the filename (see current conf.xml as example).
+* JobDefinitions : Defines where to lookup for the files, which extension to retreive, which rules to apply.
