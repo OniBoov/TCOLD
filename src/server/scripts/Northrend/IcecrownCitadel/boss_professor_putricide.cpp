@@ -238,13 +238,19 @@ class boss_professor_putricide : public CreatureScript
                 _abominationGUID.Clear();
                 SetPhase(PHASE_COMBAT_1);
                 _experimentState = EXPERIMENT_STATE_OOZE;
-                me->SetReactState(REACT_DEFENSIVE);
+                me->SetReactState(REACT_AGGRESSIVE);
                 me->SetWalk(false);
                 if (me->GetMotionMaster()->GetCurrentMovementGeneratorType() == POINT_MOTION_TYPE)
                     me->GetMotionMaster()->MovementExpired();
 
                 if (instance->GetBossState(DATA_ROTFACE) == DONE && instance->GetBossState(DATA_FESTERGUT) == DONE)
                     me->RemoveFlag(UNIT_FIELD_FLAGS, UNIT_FLAG_IMMUNE_TO_PC | UNIT_FLAG_NOT_SELECTABLE);
+            }
+
+            void MoveInLineOfSight(Unit* who) override
+            {
+                if (me->IsWithinDist(who, 10.0f) && !me->IsInCombat())
+                    BossAI::MoveInLineOfSight(who);
             }
 
             void EnterCombat(Unit* who) override

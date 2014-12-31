@@ -93,7 +93,6 @@ class boss_festergut : public CreatureScript
             void Reset() override
             {
                 _Reset();
-                me->SetReactState(REACT_DEFENSIVE);
                 events.ScheduleEvent(EVENT_BERSERK, 300000);
                 events.ScheduleEvent(EVENT_INHALE_BLIGHT, urand(25000, 30000));
                 events.ScheduleEvent(EVENT_GAS_SPORE, urand(20000, 25000));
@@ -151,6 +150,12 @@ class boss_festergut : public CreatureScript
                 ScriptedAI::EnterEvadeMode();
                 if (Creature* professor = ObjectAccessor::GetCreature(*me, instance->GetGuidData(DATA_PROFESSOR_PUTRICIDE)))
                     professor->AI()->EnterEvadeMode();
+            }
+
+            void MoveInLineOfSight(Unit* who) override
+            {
+                if (me->IsWithinDist(who, 10.0f) && !me->IsInCombat())
+                    BossAI::MoveInLineOfSight(who);
             }
 
             void KilledUnit(Unit* victim) override

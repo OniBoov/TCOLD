@@ -168,9 +168,10 @@ class boss_rotface : public CreatureScript
                     Talk(SAY_SLIME_SPRAY);
             }
 
-            void MoveInLineOfSight(Unit* /*who*/) override
+            void MoveInLineOfSight(Unit* who) override
             {
-                // don't enter combat
+                if (me->IsWithinDist(who, 10.0f) && !me->IsInCombat())
+                    BossAI::MoveInLineOfSight(who);
             }
 
             void JustSummoned(Creature* summon) override
