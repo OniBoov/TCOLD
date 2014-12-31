@@ -177,10 +177,12 @@ class instance_icecrown_citadel : public InstanceMapScript
                 if (instance->IsHeroic() && HeroicAttempts)
                     player->SendUpdateWorldState(WORLDSTATE_ATTEMPTS_REMAINING, HeroicAttempts);
 
-                if (!IsBuffEnabled)
+                if (IsBuffEnabled)
                 {
-                    player->RemoveAura(SPELL_HELLSCREAM_WARSONG);
-                    player->RemoveAura(SPELL_STRENGTH_OF_WRYNN);
+                    if (!player->HasAura(SPELL_HELLSCREAM_WARSONG_20) && player->GetTeam() == HORDE)
+                        player->AddAura(SPELL_HELLSCREAM_WARSONG_20, player);
+                    if (!player->HasAura(SPELL_STRENGTH_OF_WRYNN_20) && player->GetTeam() == ALLIANCE)
+                        player->AddAura(SPELL_STRENGTH_OF_WRYNN_20, player);
                 }
             }
 

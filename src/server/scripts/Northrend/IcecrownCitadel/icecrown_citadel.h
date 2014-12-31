@@ -58,7 +58,9 @@ enum SharedSpells
     SPELL_SHADOWS_FATE                  = 71169,
 
     SPELL_HELLSCREAM_WARSONG            = 73822,
-    SPELL_STRENGTH_OF_WRYNN             = 73828
+    SPELL_HELLSCREAM_WARSONG_20         = 73820,
+    SPELL_STRENGTH_OF_WRYNN             = 73828,
+    SPELL_STRENGTH_OF_WRYNN_20          = 73826
 };
 
 enum TeleporterSpells
