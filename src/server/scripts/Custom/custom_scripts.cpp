@@ -1660,7 +1660,9 @@ enum PutricideTrapData
     NPC_FLESH_EATING_INSECT  = 37782,
     ACTION_START_TRAP_EVENT  = 20,
     ACTION_END_TRAP_EVENT    = 21,
-    SPELL_FLESH_EATING_BITE  = 72967
+    ACTION_FAIL_TRAP_EVENT   = 22,
+    SPELL_FLESH_EATING_BITE  = 72967,
+    EVENT_CHECK_INSTANCE     = 3
 };
 
 class TW_npc_putricide_insect_trap : public CreatureScript
@@ -1679,18 +1681,36 @@ class TW_npc_putricide_insect_trap : public CreatureScript
 
         void DoAction(int32 actionId) override
         {
-            if (actionId == ACTION_START_TRAP_EVENT)
+            switch (actionId)
             {
-                me->AI()->DoCastAOE(SPELL_GIANT_INSECT_SWARM);
-                _events.ScheduleEvent(EVENT_SUMMON_INSECTS, 2000);
+                case ACTION_START_TRAP_EVENT:
+                    me->AI()->DoCastAOE(SPELL_GIANT_INSECT_SWARM);
+                    _events.ScheduleEvent(EVENT_SUMMON_INSECTS, 2000);
+                    _events.ScheduleEvent(EVENT_CHECK_INSTANCE, 5000);
+                    break;
+                case ACTION_END_TRAP_EVENT:
+                    CleanUpEvent(false);
+                    _events.Reset();
+                    break;
+                case ACTION_FAIL_TRAP_EVENT:
+                    CleanUpEvent(true);
+                    _events.Reset();
+                    _instance->SetData(DATA_INSECT_SWARM_EVENT, NOT_STARTED);
+                    break;
+                default:
+                    break;
             }
-            else if (actionId == ACTION_END_TRAP_EVENT)
-            {
-                me->InterruptNonMeleeSpells(true);
-                EnterEvadeMode();
-                me->SetVisible(false);
-                me->ClearAllReactives();
-            }
+        }
+
+        void CleanUpEvent(bool DespawnAdds)
+        {
+            me->InterruptNonMeleeSpells(true);
+            EnterEvadeMode();
+            me->SetVisible(false);
+            me->ClearAllReactives();
+
+            if (DespawnAdds)
+                _summons.DespawnAll();
         }
 
         void EnterCombat(Unit* /* who */) override
@@ -1725,6 +1745,34 @@ class TW_npc_putricide_insect_trap : public CreatureScript
                         SummonInsects(victim);
 
                     _events.ScheduleEvent(EVENT_SUMMON_INSECTS, 3000);
+                }
+                else if (eventId == EVENT_CHECK_INSTANCE)
+                {
+                    if (_instance->GetData(DATA_INSECT_SWARM_EVENT) == DONE)
+                        return;
+
+                    bool HasInsectSwarm = false;
+                    Map::PlayerList const &PlList = me->GetMap()->GetPlayers();
+
+                    if (PlList.isEmpty())
+                    {
+                        DoAction(ACTION_FAIL_TRAP_EVENT);
+                        return;
+                    }
+
+                    for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
+                    {
+                        if (Player* player = i->GetSource())
+                        {
+                            if (player->HasAura(SPELL_GIANT_INSECT_SWARM))
+                                HasInsectSwarm = true;
+                        }
+                    }
+
+                    if (!HasInsectSwarm)
+                        DoAction(ACTION_FAIL_TRAP_EVENT);
+
+                    _events.ScheduleEvent(EVENT_CHECK_INSTANCE, 5000);
                 }
             }
         }
