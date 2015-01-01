@@ -1686,7 +1686,6 @@ class TW_npc_putricide_insect_trap : public CreatureScript
             }
             else if (actionId == ACTION_END_TRAP_EVENT)
             {
-                _summons.DespawnAll();
                 me->InterruptNonMeleeSpells(true);
                 EnterEvadeMode();
                 me->SetVisible(false);
@@ -1696,7 +1695,7 @@ class TW_npc_putricide_insect_trap : public CreatureScript
 
         void EnterCombat(Unit* /* who */) override
         {
-            if (_instance->GetData(DATA_INSECT_SWARM_EVENT) != DONE)
+            if (_instance->GetData(DATA_INSECT_SWARM_EVENT) == IN_PROGRESS)
                 SummonInsects(me);
         }
 
@@ -1784,9 +1783,6 @@ class TW_npc_flesh_eating_insect : public CreatureScript
         void UpdateAI(uint32 diff) override
         {
             if (!UpdateVictim())
-                return;
-
-            if (_instance->GetData(DATA_INSECT_SWARM_EVENT) != IN_PROGRESS)
                 return;
 
             _events.Update(diff);
