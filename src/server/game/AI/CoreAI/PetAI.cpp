@@ -28,6 +28,7 @@
 #include "World.h"
 #include "Util.h"
 #include "Group.h"
+#include "InstanceScript.h"
 #include "SpellInfo.h"
 
 int PetAI::Permissible(const Creature* creature)
@@ -259,6 +260,16 @@ void PetAI::UpdateAI(uint32 diff)
     me->UpdateSpeed(MOVE_WALK, true);
     me->UpdateSpeed(MOVE_FLIGHT, true);
 
+    // TW - Pure hack to apply ICC buff to pets.
+    //      The aura is limited to the zone so we don't need to remove it later, just apply.
+    if (owner && owner->GetTypeId() == TYPEID_PLAYER && me->GetMap()->GetId() == 631)
+    {
+        if (owner->ToPlayer()->GetTeam() == ALLIANCE && !me->HasAura(73826) && me->GetInstanceScript()->GetData(44 /*DATA_IS_BUFF_ENABLED*/) == 1) // Strength of Wrynn
+            me->AddAura(73826, me);
+
+        if (owner->ToPlayer()->GetTeam() == HORDE && !me->HasAura(73820) && me->GetInstanceScript()->GetData(44 /*DATA_IS_BUFF_ENABLED*/) == 1)
+            me->AddAura(73820, me);
+    }
 }
 
 void PetAI::UpdateAllies()
