@@ -1688,7 +1688,9 @@ class TW_npc_putricide_insect_trap : public CreatureScript
             {
                 _summons.DespawnAll();
                 me->InterruptNonMeleeSpells(true);
-                me->DespawnOrUnsummon();
+                EnterEvadeMode();
+                me->SetVisible(false);
+                me->getHostileRefManager.ClearAllReactives();
             }
         }
 
@@ -1708,6 +1710,9 @@ class TW_npc_putricide_insect_trap : public CreatureScript
 
         void UpdateAI(uint32 diff) override
         {
+            if (_instance->GetData(DATA_INSECT_SWARM_EVENT) == DONE)
+                me->DespawnOrUnsummon();
+
             if (_instance->GetData(DATA_INSECT_SWARM_EVENT) != IN_PROGRESS)
                 return;
 
