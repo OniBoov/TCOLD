@@ -1688,8 +1688,7 @@ class TW_npc_putricide_insect_trap : public CreatureScript
             {
                 _summons.DespawnAll();
                 me->InterruptNonMeleeSpells(true);
-                EnterEvadeMode();
-                me->SetVisible(false);
+                me->DespawnOrUnsummon();
             }
         }
 
