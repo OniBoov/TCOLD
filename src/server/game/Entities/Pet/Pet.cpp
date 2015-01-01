@@ -940,6 +940,7 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
             SetBaseWeaponDamage(BASE_ATTACK, MINDAMAGE, float(petlevel - (petlevel / 4)));
             SetBaseWeaponDamage(BASE_ATTACK, MAXDAMAGE, float(petlevel + (petlevel / 4)));
 
+
             //SetModifierValue(UNIT_MOD_ATTACK_POWER, BASE_VALUE, float(cinfo->attackpower));
             break;
         }
@@ -1066,6 +1067,19 @@ bool Guardian::InitStatsForLevel(uint8 petlevel)
                 }
             }
             break;
+        }
+    }
+
+    if (GetOwner()->GetTypeId() == TYPEID_PLAYER)
+    {
+        Player* player = GetOwner()->ToPlayer();
+        if (IsHunterPet())
+            m_modMeleeHitChance = player->GetRatingBonusValue(CR_HIT_RANGED);
+        else
+        {
+            m_modMeleeHitChance = player->GetRatingBonusValue(CR_HIT_MELEE);
+            float ownerHaste = player->GetBaseCombatRating(CR_HASTE_MELEE) * player->GetRatingMultiplier(CR_HASTE_MELEE);
+            UpdateMeleeHaste(0.0f, ownerHaste);
         }
     }
 
