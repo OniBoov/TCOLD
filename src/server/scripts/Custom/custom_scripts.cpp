@@ -1690,7 +1690,7 @@ class TW_npc_putricide_insect_trap : public CreatureScript
                 me->InterruptNonMeleeSpells(true);
                 EnterEvadeMode();
                 me->SetVisible(false);
-                me->getHostileRefManager.ClearAllReactives();
+                me->getHostileRefManager->ClearAllReactives();
             }
         }
 
