@@ -286,7 +286,7 @@ public:
             switch (events.ExecuteEvent())
             {
                 case EVENT_CHECK_AREA:
-                    if (me->GetAreaId() == AREA_DUN_NIFFELEM)
+                    if (me->GetAreaId() != AREA_DUN_NIFFELEM)
                     {
                         if (Vehicle* vehicle = me->GetVehicleKit())
                             if (Unit* passenger = vehicle->GetPassenger(0))
