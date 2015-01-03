@@ -3704,6 +3704,13 @@ bool Player::AddSpell(uint32 spellId, bool active, bool learning, bool dependent
                 }
             }
         }
+        // Primal fury(feral) Don't learn low ranks and remove low rank spell if present
+        else if (spellId == 16954 || spellId == 16961)
+        {
+            if (uint32 prev_spell = sSpellMgr->GetPrevSpellInChain(spellId))
+                RemoveSpell(prev_spell, false, false);
+        }
+
         // non talent spell: learn low ranks (recursive call)
         else if (uint32 prev_spell = sSpellMgr->GetPrevSpellInChain(spellId))
         {
