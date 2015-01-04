@@ -1075,7 +1075,7 @@ class TW_npc_runic_colossus : public CreatureScript
                 switch (action)
                 {
                     case ACTION_RUNIC_SMASH:
-                        RunicSmashPhase = 1;
+                        //RunicSmashPhase = 1;
                         break;
                 }
             }
