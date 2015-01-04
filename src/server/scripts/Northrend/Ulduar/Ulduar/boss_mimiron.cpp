@@ -673,6 +673,7 @@ class boss_mimiron : public CreatureScript
                                 if (deadplayers >= PlList.getSize())
                                     EnterEvadeMode();
                             }
+                            events.ScheduleEvent(EVENT_CHECK_PLAYERS, 5000);
                             break;
                         default:
                             break;
