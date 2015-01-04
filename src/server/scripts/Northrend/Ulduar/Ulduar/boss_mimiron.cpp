@@ -653,27 +653,29 @@ class boss_mimiron : public CreatureScript
                             me->DespawnOrUnsummon(1000); // sniffs say 6 sec after, but it doesnt matter.
                             break;
                         case EVENT_CHECK_PLAYERS:
-                            uint8 deadplayers = 0;
-                            Map::PlayerList const &PlList = me->GetMap()->GetPlayers();
-
-                            if (PlList.isEmpty())
                             {
-                                EnterEvadeMode();
-                                return;
-                            }
+                                uint8 deadplayers = 0;
+                                Map::PlayerList const &PlList = me->GetMap()->GetPlayers();
 
-                            for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
-                            {
-                                if (Player* player = i->GetSource())
+                                if (PlList.isEmpty())
                                 {
-                                    if (!player->IsAlive())
-                                        deadplayers++;
+                                    EnterEvadeMode();
+                                    return;
                                 }
 
-                                if (deadplayers >= PlList.getSize())
-                                    EnterEvadeMode();
+                                for (Map::PlayerList::const_iterator i = PlList.begin(); i != PlList.end(); ++i)
+                                {
+                                    if (Player* player = i->GetSource())
+                                    {
+                                        if (!player->IsAlive())
+                                            deadplayers++;
+                                    }
+
+                                    if (deadplayers >= PlList.getSize())
+                                        EnterEvadeMode();
+                                }
+                                events.ScheduleEvent(EVENT_CHECK_PLAYERS, 5000);
                             }
-                            events.ScheduleEvent(EVENT_CHECK_PLAYERS, 5000);
                             break;
                         default:
                             break;
