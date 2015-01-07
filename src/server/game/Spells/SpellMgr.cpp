@@ -3817,6 +3817,9 @@ void SpellMgr::LoadSpellInfoCorrections()
             case 60103: // Lava Lash
                 spellInfo->Effects[EFFECT_1].TargetA = SpellImplicitTargetInfo(TARGET_UNIT_TARGET_ENEMY);
                 break;
+            case 52610: // Savage Roar
+                spellInfo->AttributesEx |= SPELL_ATTR1_NOT_BREAK_STEALTH;
+                spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_INITIAL_AGGRO;
             // END OF TRUEWOW HACKS
             default:
                 break;
