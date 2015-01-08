@@ -3820,6 +3820,7 @@ void SpellMgr::LoadSpellInfoCorrections()
             case 52610: // Savage Roar
                 spellInfo->AttributesEx |= SPELL_ATTR1_NOT_BREAK_STEALTH;
                 spellInfo->AttributesEx3 |= SPELL_ATTR3_NO_INITIAL_AGGRO;
+                break;
             // END OF TRUEWOW HACKS
             default:
                 break;
